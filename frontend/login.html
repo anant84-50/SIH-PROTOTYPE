@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign in · Preclinic IQ AI</title>
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+</head>
+<body>
+  <div class="auth-wrap">
+    <div class="card auth-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+        <div class="brand" style="margin:0">
+          <img src="/assets/emblem.png" alt="" width="46" height="46" />
+          <div>
+            <h1>Preclinic IQ AI</h1>
+            <small data-i18n="authOnly">Authorized access only</small>
+          </div>
+        </div>
+        <div class="lang-switch">
+          <button type="button" data-lang="en">EN</button>
+          <button type="button" data-lang="hi">हिं</button>
+          <button type="button" data-lang="ta">த</button>
+          <button type="button" data-lang="bn">বাং</button>
+        </div>
+      </div>
+      <form id="loginForm" action="#" method="post" onsubmit="return false;">
+        <div class="role-switch" id="roles">
+          <button type="button" data-role="PATIENT" class="on" data-i18n="rolePatient">Patient</button>
+          <button type="button" data-role="DOCTOR" data-i18n="roleDoctor">Doctor</button>
+          <button type="button" data-role="ADMIN" data-i18n="roleAdmin">Admin</button>
+        </div>
+        <div class="field">
+          <label id="idLabel" data-i18n="idPatient">Patient ID</label>
+          <input id="identifier" autocomplete="username" placeholder="PCI-2026-000001" />
+        </div>
+        <div class="field">
+          <label data-i18n="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" />
+        </div>
+        <button class="btn" id="loginBtn" type="button" style="width:100%" data-i18n="enter">Enter</button>
+        <p class="small muted" id="hint" style="margin-top:14px"></p>
+        <p class="small" id="loginErr" style="color:#9b2c2c;min-height:1.2em"></p>
+      </form>
+      <hr class="rule" />
+      <details>
+        <summary class="small" data-i18n="newReg">New patient registration</summary>
+        <div class="field" style="margin-top:12px"><label data-i18n="fullName">Full name</label><input id="regName" /></div>
+        <div class="grid-2">
+          <div class="field"><label data-i18n="dob">Date of birth</label><input id="regDob" type="date" /></div>
+          <div class="field"><label data-i18n="sex">Sex</label>
+            <select id="regSex">
+              <option value="Female" data-i18n="sexF">Female</option>
+              <option value="Male" data-i18n="sexM">Male</option>
+              <option value="Other" data-i18n="sexO">Other</option>
+              <option value="Prefer not to say" data-i18n="sexN">Prefer not to say</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label data-i18n="phone">Phone</label><input id="regPhone" /></div>
+        <div class="field"><label data-i18n="choosePw">Choose a password (min 8)</label><input id="regPw" type="password" /></div>
+        <button class="btn ghost" type="button" id="regBtn" data-i18n="createId">Create patient identity</button>
+        <p class="small muted" id="regOut"></p>
+      </details>
+      <p class="small" style="margin-top:16px"><a href="/" data-i18n="backHome">Back to institute page</a></p>
+    </div>
+  </div>
+  <script src="/js/boot.js?v=8"></script>
+  <script src="/js/api.js?v=8"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/i18n.js"></script>
+  <script>
+    const ui = PreclinicUI;
+    const I = PreclinicI18n;
+    I.bindSwitch();
+    I.apply();
+    let role = "PATIENT";
+    const dest = { ADMIN: "/admin", DOCTOR: "/doctor", PATIENT: "/patient" };
+
+    function applyRole(r) {
+      role = r;
+      document.querySelectorAll("#roles button").forEach((b) => b.classList.toggle("on", b.getAttribute("data-role") === r));
+      const key = r === "DOCTOR" ? "idDoctor" : r === "ADMIN" ? "idAdmin" : "idPatient";
+      document.getElementById("idLabel").textContent = I.t(key);
+      document.getElementById("identifier").placeholder = r === "DOCTOR" ? "DOC-001" : r === "ADMIN" ? "NexusCare" : "PCI-2026-000001";
+      document.getElementById("hint").textContent = I.t(r === "DOCTOR" ? "hintD" : r === "ADMIN" ? "hintA" : "hintP");
+    }
+    document.querySelectorAll("#roles button").forEach((b) => b.addEventListener("click", () => applyRole(b.getAttribute("data-role"))));
+    document.addEventListener("preclinic:lang", () => { I.apply(); applyRole(role); });
+    applyRole("PATIENT");
+    fetch("/api/v1/health").then(function (r) { return r.json(); }).then(function (h) {
+      if (!h || !h.success) showErr("API is not healthy. Restart the server.");
+    }).catch(function () {
+      showErr("Backend is not running. Start the site on port 8000.");
+    });
+
+    function showErr(msg) {
+      document.getElementById("loginErr").textContent = msg || "";
+      if (msg) ui.toast(msg);
+    }
+
+    async function doLogin(ev) {
+      if (ev) ev.preventDefault();
+      const id = document.getElementById("identifier").value.trim();
+      const pw = document.getElementById("password").value;
+      if (!id || !pw) { showErr("Enter ID and password."); return false; }
+      const btn = document.getElementById("loginBtn");
+      btn.disabled = true;
+      showErr("");
+      const guessed = (window.PreclinicAuth && PreclinicAuth.guessRole) ? PreclinicAuth.guessRole(id, role) : role;
+      applyRole(guessed);
+      try {
+        const r = await fetch("/api/v1/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify({ identifier: id, password: pw, role: guessed })
+        });
+        const text = await r.text();
+        let res = null;
+        try { res = JSON.parse(text); } catch (_e) {
+          showErr("Server did not return JSON (" + r.status + "). Is the API running?");
+          btn.disabled = false;
+          return false;
+        }
+        if (!res.success || !res.data || !res.data.accessToken || !res.data.user) {
+          showErr((res.error && res.error.message) || "ID, role or password is incorrect.");
+          btn.disabled = false;
+          return false;
+        }
+        if (window.PreclinicAuth) PreclinicAuth.saveSession(res.data);
+        else {
+          try {
+            localStorage.setItem("preclinic.accessToken", res.data.accessToken);
+            localStorage.setItem("preclinic.user", JSON.stringify(res.data.user));
+          } catch (_e) { /* ignore */ }
+        }
+        const go = dest[res.data.user.role] || "/patient";
+        window.location.assign(go + "?access_token=" + encodeURIComponent(res.data.accessToken));
+        return false;
+      } catch (err) {
+        showErr("Cannot reach the server. Open this site from port 8000. (" + (err && err.message ? err.message : "network") + ")");
+        btn.disabled = false;
+        return false;
+      }
+    }
+    document.getElementById("loginBtn").addEventListener("click", doLogin);
+    document.getElementById("loginForm").addEventListener("submit", doLogin);
+    document.getElementById("password").addEventListener("keydown", function (e) { if (e.key === "Enter") doLogin(e); });
+    document.getElementById("identifier").addEventListener("keydown", function (e) { if (e.key === "Enter") doLogin(e); });
+
+    document.getElementById("regBtn").addEventListener("click", async () => {
+      const res = await PreclinicAuth.registerPatient({
+        fullName: document.getElementById("regName").value.trim(),
+        dateOfBirth: document.getElementById("regDob").value || null,
+        sex: document.getElementById("regSex").value,
+        phone: document.getElementById("regPhone").value.trim(),
+        password: document.getElementById("regPw").value,
+        language: I.lang()
+      });
+      if (!res.success) { showErr(ui.errMsg(res)); return; }
+      document.getElementById("regOut").textContent = I.t("idPatient") + ": " + res.data.patientId;
+      document.getElementById("identifier").value = res.data.patientId;
+      applyRole("PATIENT");
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Preclinic IQ AI — Ministry of Ayush</title>
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/site.css?v=4" />
+</head>
+<body class="landing">
+  <nav class="pub-nav">
+    <div class="brand">
+      <img src="/assets/emblem.png" alt="Preclinic IQ AI emblem" />
+      <div>
+        <h1>Preclinic IQ AI</h1>
+        <small data-i18n="brandSub">Ministry of Ayush · AIIA</small>
+      </div>
+    </div>
+    <div class="pub-links">
+      <a class="on" href="/">Home</a>
+      <a href="/about">What</a>
+      <a href="/how-it-works">How to use</a>
+      <a href="/why">Why it exists</a>
+      <div class="lang-switch dark">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="hi">हिं</button>
+        <button type="button" data-lang="ta">த</button>
+        <button type="button" data-lang="bn">বাং</button>
+      </div>
+      <a class="btn nav-signin" href="/login" data-i18n="signIn" style="background:#f4efe4;color:#12211c;border:1px solid #c4a35a;font-weight:700">Sign in</a>
+      <a class="btn gold" href="/login" data-i18n="beginIntake">Begin intake</a>
+    </div>
+  </nav>
+  <section class="hero hero-home">
+    <div>
+      <div class="eyebrow" data-i18n="landingKicker">SIH 26047 · Smart Automation · Patient case-taking</div>
+      <h1 data-i18n="landingH1">The consultation should begin informed, not from a blank page.</h1>
+      <p class="muted" style="max-width:46ch;font-size:18px" data-i18n="landingLead">
+        Voice, text and documents become a source-linked clinical story — with AYUSH history as a first-class record. The doctor still decides. The model never prescribes.
+      </p>
+      <div class="kicker">
+        <span class="chip gold" data-i18n="chipId">PCI-YYYY-XXXXXX</span>
+        <span class="chip leaf" data-i18n="chipFhir">FHIR / ABDM ready</span>
+        <span class="chip" data-i18n="chipEm">Deterministic emergency rules</span>
+      </div>
+      <img class="hero-art clinic-pair" src="/assets/clinic-pair.png" alt="Doctor preparing an AYUSH chart, and a consultation with patients using voice, documents and records" />
+      <div class="btn-row">
+        <a class="btn gold" href="/login" data-i18n="beginIntake">Begin intake</a>
+        <a class="btn" href="/login" data-i18n="enterDesk">Enter the institute desk</a>
+        <a class="btn ghost" href="/about">What · How · Why</a>
+      </div>
+    </div>
+    <div>
+      <div class="manuscript">
+        <div class="eyebrow" data-i18n="howVisit">How a visit is prepared</div>
+        <h3 data-i18n="fromWord">From first word to verified chart</h3>
+        <div class="steps">
+          <div><span class="num">1</span><div><strong data-i18n="step1t">Identity &amp; consent</strong><div class="small muted" data-i18n="step1d">Patient ID, language, purpose-limited consent.</div></div></div>
+          <div><span class="num">2</span><div><strong data-i18n="step2t">Adaptive interview</strong><div class="small muted" data-i18n="step2d">Six complaint pathways — fever to “other”. Never a diagnosis menu.</div></div></div>
+          <div><span class="num">3</span><div><strong data-i18n="step3t">Documents &amp; timeline</strong><div class="small muted" data-i18n="step3d">OCR queued in the backend. Conflicts stay open until a human closes them.</div></div></div>
+          <div><span class="num">4</span><div><strong data-i18n="step4t">Patient, then doctor</strong><div class="small muted" data-i18n="step4d">AI_DRAFT → PATIENT_CONFIRMED → DOCTOR_VERIFIED. Versions are kept.</div></div></div>
+        </div>
+        <hr class="rule" />
+        <p class="disclaimer" data-i18n="disclaimer">AI prepares structured context. It does not diagnose or prescribe. A registered practitioner must verify.</p>
+      </div>
+    </div>
+  </section>
+  <script src="/js/i18n.js"></script>
+  <script>PreclinicI18n.bindSwitch(); PreclinicI18n.apply();</script>
+</body>
+</html>

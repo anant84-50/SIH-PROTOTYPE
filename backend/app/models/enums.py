@@ -1,0 +1,101 @@
+from enum import Enum
+
+
+class RoleName(str, Enum):
+    ADMIN = "ADMIN"
+    DOCTOR = "DOCTOR"
+    PATIENT = "PATIENT"
+
+
+class ComplaintPathway(str, Enum):
+    FEVER = "FEVER"
+    COUGH_COLD = "COUGH_COLD"
+    HEADACHE = "HEADACHE"
+    ABDOMINAL_PAIN = "ABDOMINAL_PAIN"
+    BODY_JOINT_PAIN = "BODY_JOINT_PAIN"
+    OTHER = "OTHER"
+
+
+class VisitStatus(str, Enum):
+    DRAFT = "DRAFT"
+    IN_INTAKE = "IN_INTAKE"
+    AWAITING_PATIENT = "AWAITING_PATIENT"
+    AWAITING_DOCTOR = "AWAITING_DOCTOR"
+    VERIFIED = "VERIFIED"
+    CLOSED = "CLOSED"
+
+
+class VerificationStatus(str, Enum):
+    AI_DRAFT = "AI_DRAFT"
+    PATIENT_CONFIRMED = "PATIENT_CONFIRMED"
+    DOCTOR_VERIFIED = "DOCTOR_VERIFIED"
+    REJECTED = "REJECTED"
+    NEEDS_REVIEW = "NEEDS_REVIEW"
+
+
+class ConfidenceBand(str, Enum):
+    HIGH = "HIGH"
+    MEDIUM = "MEDIUM"
+    LOW = "LOW"
+    NEEDS_VERIFICATION = "NEEDS_VERIFICATION"
+
+
+class ConflictStatus(str, Enum):
+    OPEN = "OPEN"
+    PATIENT_CONFIRMED = "PATIENT_CONFIRMED"
+    DOCTOR_CONFIRMED = "DOCTOR_CONFIRMED"
+    DISMISSED = "DISMISSED"
+
+
+class EmergencyStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    ACKNOWLEDGED = "ACKNOWLEDGED"
+    RESOLVED = "RESOLVED"
+    FALSE_POSITIVE = "FALSE_POSITIVE"
+
+
+class Priority(str, Enum):
+    NORMAL = "NORMAL"
+    HIGH = "HIGH"
+    URGENT = "URGENT"
+
+
+class DocumentType(str, Enum):
+    PRESCRIPTION = "PRESCRIPTION"
+    LAB_REPORT = "LAB_REPORT"
+    DISCHARGE_SUMMARY = "DISCHARGE_SUMMARY"
+    MEDICAL_CERTIFICATE = "MEDICAL_CERTIFICATE"
+    IMAGING_REPORT = "IMAGING_REPORT"
+    PREVIOUS_DIAGNOSIS = "PREVIOUS_DIAGNOSIS"
+    OTHER = "OTHER"
+
+
+class SourceType(str, Enum):
+    PATIENT_INPUT = "PATIENT_INPUT"
+    DOCUMENT = "DOCUMENT"
+    PREVIOUS_RECORD = "PREVIOUS_RECORD"
+    DOCTOR = "DOCTOR"
+    AI = "AI"
+
+
+class JobStatus(str, Enum):
+    QUEUED = "QUEUED"
+    RUNNING = "RUNNING"
+    SUCCEEDED = "SUCCEEDED"
+    FAILED = "FAILED"
+    DEFERRED = "DEFERRED"
+
+
+class InputMode(str, Enum):
+    VOICE = "VOICE"
+    TEXT = "TEXT"
+    TOUCH = "TOUCH"
+
+
+class DocumentProcessStatus(str, Enum):
+    UPLOADED = "UPLOADED"
+    QUEUED = "QUEUED"
+    PROCESSING = "PROCESSING"
+    PROCESSED = "PROCESSED"
+    FAILED = "FAILED"
+    DEFERRED = "DEFERRED"

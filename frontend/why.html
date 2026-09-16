@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Why it was built · Preclinic IQ AI</title>
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/site.css?v=4" />
+</head>
+<body class="landing">
+  <nav class="pub-nav">
+    <div class="brand">
+      <img src="/assets/emblem.png" alt="" />
+      <div><h1>Preclinic IQ AI</h1><small>Why it was built</small></div>
+    </div>
+    <div class="pub-links">
+      <a href="/">Home</a>
+      <a href="/about">What</a>
+      <a href="/how-it-works">How to use</a>
+      <a class="on" href="/why">Why it exists</a>
+      <div class="lang-switch dark">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="hi">हिं</button>
+        <button type="button" data-lang="ta">த</button>
+        <button type="button" data-lang="bn">বাং</button>
+      </div>
+      <a class="btn nav-signin" href="/login" style="background:#f4efe4;color:#12211c;border:1px solid #c4a35a;font-weight:700">Sign in</a>
+    </div>
+  </nav>
+  <section class="story">
+    <div class="eyebrow">SIH 26047 · Theme: Smart Automation</div>
+    <h1>Consultations in AYUSH settings still start from a blank page.</h1>
+    <p class="muted" style="max-width:64ch">The Ministry of Ayush and the All India Institute of Ayurveda asked for patient case-taking software that respects both classical history-taking and modern records. Doctors lose time reconstructing stories; patients repeat themselves; paper files go missing; emergencies are easy to miss in a busy OPD.</p>
+    <div class="story-grid">
+      <article class="story-card">
+        <h3>The problem</h3>
+        <p>Unstructured intake. Mixed languages. Handwritten prescriptions. No single timeline. No first-class prakriti / nidana capture. No deterministic safety net.</p>
+      </article>
+      <article class="story-card">
+        <h3>The decision we made</h3>
+        <p>AI may draft. Patients confirm. Doctors verify. Nothing silent overwrites a conflict. Emergency rules are code, not a chatbot. Files live in secure storage with a database pointer — not inside PostgreSQL blobs.</p>
+      </article>
+      <article class="story-card">
+        <h3>Who it is for</h3>
+        <p>OPD patients who speak different Indian languages, Kayachikitsa and Panchakarma clinicians, and institute administrators who must see every saved history and every urgent alert.</p>
+      </article>
+    </div>
+  </section>
+  <footer class="pub-foot">Built as one stack: HTML/CSS/JS → FastAPI → PostgreSQL. Frontend never holds API keys.</footer>
+  <script src="/js/i18n.js"></script>
+  <script>PreclinicI18n.bindSwitch(); PreclinicI18n.apply();</script>
+</body>
+</html>

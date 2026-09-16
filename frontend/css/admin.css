@@ -1,0 +1,5 @@
+.queue-row { cursor: pointer; }
+.queue-row:hover td { background: #f7f1e3; }
+.health-ok { color: var(--ok); font-weight: 700; }
+.health-bad { color: var(--alert); font-weight: 700; }
+.log-action { font-family: var(--mono); font-size: 12px; overflow-wrap: anywhere; }

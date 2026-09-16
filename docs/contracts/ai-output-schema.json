@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PreclinicIQAIOutput",
+  "type": "object",
+  "required": ["schemaVersion", "visitId", "verificationStatus", "confidence"],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "visitId": { "type": "string", "format": "uuid" },
+    "patientId": { "type": "string", "pattern": "^PCI-[0-9]{4}-[0-9]{6}$" },
+    "complaintPathway": {
+      "enum": ["FEVER", "COUGH_COLD", "HEADACHE", "ABDOMINAL_PAIN", "BODY_JOINT_PAIN", "OTHER"]
+    },
+    "verificationStatus": {
+      "enum": ["AI_DRAFT", "PATIENT_CONFIRMED", "DOCTOR_VERIFIED", "REJECTED", "NEEDS_REVIEW"]
+    },
+    "confidence": { "enum": ["HIGH", "MEDIUM", "LOW", "NEEDS_VERIFICATION"] },
+    "confidenceScore": { "type": "number", "minimum": 0, "maximum": 1 },
+    "chiefComplaint": { "$ref": "#/$defs/sourcedValue" },
+    "hpi": { "type": "string" },
+    "structuredHistory": {
+      "type": "object",
+      "properties": {
+        "chiefComplaint": { "type": "string" },
+        "hpi": { "type": "string" },
+        "pastMedicalHistory": { "type": "string" },
+        "pastSurgicalHistory": { "type": "string" },
+        "medications": { "type": "array", "items": { "type": "string" } },
+        "allergies": { "type": "array", "items": { "type": "string" } },
+        "familyHistory": { "type": "string" },
+        "personalHistory": { "type": "string" },
+        "reviewOfSystems": { "type": "object" },
+        "investigations": { "type": "array" },
+        "patientConcerns": { "type": "string" }
+      }
+    },
+    "ayush": {
+      "type": "object",
+      "properties": {
+        "prakriti": { "type": "string" },
+        "vikriti": { "type": "string" },
+        "sara": { "type": "string" },
+        "samhanana": { "type": "string" },
+        "pramana": { "type": "string" },
+        "satmya": { "type": "string" },
+        "sattva": { "type": "string" },
+        "aharaShakti": { "type": "string" },
+        "vyayamaShakti": { "type": "string" },
+        "vaya": { "type": "string" },
+        "ahara": { "type": "string" },
+        "vihara": { "type": "string" },
+        "nidana": { "type": "string" },
+        "samprapti": { "type": "string" }
+      }
+    },
+    "redFlags": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "label", "priority"],
+        "properties": {
+          "code": { "type": "string" },
+          "label": { "type": "string" },
+          "priority": { "enum": ["NORMAL", "HIGH", "URGENT"] }
+        }
+      }
+    },
+    "missingInformation": { "type": "array", "items": { "type": "string" } },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sourceType", "confidence", "verificationStatus"],
+        "properties": {
+          "field": { "type": "string" },
+          "value": { "type": "string" },
+          "sourceType": { "enum": ["PATIENT_INPUT", "DOCUMENT", "PREVIOUS_RECORD", "DOCTOR", "AI"] },
+          "sourceId": { "type": ["string", "null"] },
+          "confidence": { "type": "number" },
+          "verificationStatus": {
+            "enum": ["AI_DRAFT", "PATIENT_CONFIRMED", "DOCTOR_VERIFIED", "REJECTED", "NEEDS_REVIEW"]
+          }
+        }
+      }
+    },
+    "disclaimer": {
+      "const": "AI prepares structured context. It does not diagnose or prescribe. A registered practitioner must verify."
+    }
+  },
+  "$defs": {
+    "sourcedValue": {
+      "type": "object",
+      "properties": {
+        "value": { "type": "string" },
+        "sourceType": { "type": "string" },
+        "sourceId": { "type": ["string", "null"] },
+        "confidence": { "type": "number" },
+        "verificationStatus": { "type": "string" }
+      }
+    }
+  }
+}

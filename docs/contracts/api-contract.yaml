@@ -1,0 +1,87 @@
+openapi: 3.0.3
+info:
+  title: Preclinic IQ AI API
+  version: 1.0.0
+  description: Single source of truth for /api/v1. Do not silently rename paths.
+servers:
+  - url: /api/v1
+paths:
+  /auth/login:
+    post: { summary: Login with Admin ID / Doctor ID / Patient ID }
+  /auth/logout:
+    post: { summary: Invalidate refresh token }
+  /auth/refresh:
+    post: { summary: Rotate access token }
+  /auth/otp/request:
+    post: { summary: Request OTP for patient identity verification }
+  /auth/otp/verify:
+    post: { summary: Verify OTP }
+  /auth/me:
+    get: { summary: Current principal }
+  /patients:
+    post: { summary: Register patient }
+  /patients/{patientId}:
+    get: { summary: Get patient by PCI-YYYY-XXXXXX or UUID }
+    patch: { summary: Update patient demographics }
+  /patients/{patientId}/timeline:
+    get: { summary: Longitudinal timeline }
+  /patients/{patientId}/documents:
+    get: { summary: Patient documents }
+  /patients/{patientId}/visits:
+    get: { summary: Patient visits }
+  /visits:
+    post: { summary: Open a visit }
+  /visits/{visitId}:
+    get: { summary: Visit detail }
+    patch: { summary: Update visit / history }
+  /visits/{visitId}/summary:
+    get: { summary: Latest AI summary }
+  /ai/session:
+    post: { summary: Start adaptive interview }
+  /ai/message:
+    post: { summary: Send interview answer }
+  /ai/structure-history:
+    post: { summary: Structure captured history }
+  /ai/generate-summary:
+    post: { summary: Generate AI clinical summary }
+  /ai/verify-summary:
+    post: { summary: Patient or doctor verification action }
+  /documents/upload:
+    post: { summary: Multipart document upload }
+  /documents/{id}:
+    get: { summary: Document metadata }
+  /documents/{id}/process:
+    post: { summary: Queue OCR + extraction }
+  /documents/{id}/entities:
+    get: { summary: Extracted entities }
+  /emergency/trigger:
+    post: { summary: Create emergency from rules or staff }
+  /emergency/active:
+    get: { summary: Active / acknowledged alerts }
+  /emergency/{id}/acknowledge:
+    post: { summary: Acknowledge }
+  /emergency/{id}/resolve:
+    post: { summary: Resolve or mark false positive }
+  /doctor/patients:
+    get: { summary: Authorized patients }
+  /doctor/queue:
+    get: { summary: Intake queue }
+  /doctor/emergencies:
+    get: { summary: Doctor emergency inbox }
+  /doctor/summary/{visitId}:
+    patch: { summary: Edit draft summary before verify }
+  /doctor/verify/{visitId}:
+    post: { summary: Doctor verify / reject }
+  /admin/dashboard:
+    get: { summary: KPIs }
+  /admin/users:
+    get: { summary: User directory }
+  /admin/audit-logs:
+    get: { summary: Audit trail }
+  /admin/system-health:
+    get: { summary: Process, queue, storage health }
+components:
+  schemas:
+    Envelope:
+      type: object
+      required: [success, data, error, meta]

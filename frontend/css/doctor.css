@@ -1,0 +1,6 @@
+.queue-row { cursor: pointer; }
+.queue-row:hover td { background: #f7f1e3; }
+.chart-cols { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 16px; }
+.ayush-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px 14px; font-size: 13px; }
+.ayush-grid b { display: block; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
+@media (max-width: 1100px) { .chart-cols { grid-template-columns: 1fr; } }
