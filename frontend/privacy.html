@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privacy &amp; Safety · Preclinic IQ AI</title>
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/site.css?v=6" />
+</head>
+<body class="landing">
+  <nav class="pub-nav">
+    <div class="brand">
+      <img src="/assets/emblem.png" alt="" />
+      <div><h1>Preclinic IQ AI</h1><small>Privacy &amp; Safety</small></div>
+    </div>
+    <div class="pub-links">
+      <a href="/">Home</a>
+      <a href="/why">How it helps</a>
+      <a href="/how-it-works">Patient Journey</a>
+      <a href="/capabilities">Capabilities</a>
+      <a href="/privacy" class="on">Safety &amp; Privacy</a>
+      <a href="/roadmap">Roadmap</a><div class="lang-switch dark">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="hi">हिं</button>
+        <button type="button" data-lang="ta">த</button>
+        <button type="button" data-lang="bn">বাং</button>
+      </div>
+      <a class="btn nav-signin" href="/login" style="background:#f4efe4;color:#12211c;border:1px solid #c4a35a;font-weight:700">Sign in</a>
+    </div>
+  </nav>
+  <section class="story">
+    <div class="eyebrow">Privacy &amp; Safety</div>
+    <h1>Your information, controlled by you — and verified by a doctor.</h1>
+    <div class="story-grid">
+      <article class="story-card">
+        <h3>Your information belongs to you</h3>
+        <p>Patients control their own intake: consent is collected before every visit, any question can be skipped or refused, and the patient confirms the AI draft before it reaches the doctor. Patients can see their own record, timeline and documents at any time.</p>
+      </article>
+      <article class="story-card">
+        <h3>Role-based access, enforced at the API</h3>
+        <p>Access is enforced at the API level, not just the interface. Patients can read only their own records; doctors access clinical records of the institute; administrators manage the system. Cross-patient and cross-role access — including direct document URLs — is rejected by the backend with a 403, and no filesystem paths are ever exposed.</p>
+      </article>
+      <article class="story-card">
+        <h3>AI is not a diagnosis</h3>
+        <p>The AI prepares structured, source-linked context from what the patient said and uploaded. It never diagnoses, never prescribes, and never fills gaps with invented facts — “not provided” stays “not provided”. A registered practitioner verifies before any clinical use, and every summary carries an “AI-generated • doctor verification required” notice.</p>
+      </article>
+      <article class="story-card">
+        <h3>Deterministic emergency safety net</h3>
+        <p>Red-flag detection runs on fixed rules in the backend, not on a chatbot. Patient-triggered and rule-triggered alerts reach the doctor immediately, with acknowledge/resolve states and audit entries. This is a support tool — if life is in danger, call local emergency services.</p>
+      </article>
+      <article class="story-card">
+        <h3>Auditable by design</h3>
+        <p>Logins, visit creation, document uploads, summary generation, patient confirmation, doctor access, document access, verification and emergency state changes are recorded in an audit log. Sensitive content is kept out of logs; only actions and references are stored.</p>
+      </article>
+      <article class="story-card">
+        <h3>Where your data lives</h3>
+        <p>Documents are stored as files on the institute server and referenced by pointer — never embedded in the database. The prototype uses a local database; production uses PostgreSQL. While the demo providers are active, no external AI service receives your data.</p>
+      </article>
+    </div>
+    <div class="manuscript" style="margin-top:22px">
+      <div class="eyebrow">Demonstrable, not just stated</div>
+      <p style="max-width:70ch">These controls are testable in the running build: sign in as two different patients and try to reach the other’s documents (the backend refuses), open a doctor-only route as a patient (403), or watch the audit trail fill as a visit moves from intake to verification.</p>
+    </div>
+  </section>
+  <footer class="pub-foot">Preclinic IQ AI · Ministry of Ayush · All India Institute of Ayurveda</footer>
+  <script src="/js/i18n.js?v=133"></script>
+  <script>PreclinicI18n.bindSwitch(); PreclinicI18n.apply();</script>
+</body>
+</html>

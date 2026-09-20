@@ -26,7 +26,13 @@ def _visit(db: Session, visit_id: str, user: User) -> Visit:
 @router.post("/session")
 def ai_session(body: AiSessionIn, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     visit = _visit(db, body.visitId, user)
-    conv, payload = start_session(db, visit)
+    reuse_from = None
+    if body.reuseFrom:
+        prev = db.get(Visit, body.reuseFrom)
+        # Must belong to the same patient.
+        if prev and prev.patient_uuid == visit.patient_uuid:
+            reuse_from = prev.id
+    conv, payload = start_session(db, visit, reuse_from=reuse_from)
     db.commit()
     return ok(payload)
 
@@ -73,7 +79,10 @@ def structure_history(body: StructureIn, db: Session = Depends(get_db), user: Us
     if not conv:
         raise ApiError("VALIDATION_ERROR", "No interview session to structure.")
     structured = structure_from_session(conv)
-    hist = write_structured_history(db, visit, structured)
+    # Re-derivation from the interview must not overwrite what the
+    # patient/doctor already saved in the history form (no data loss on
+    # confirm/regenerate cycles).
+    hist = write_structured_history(db, visit, structured, merge_with_prev=True)
     db.commit()
     return ok(history_out(hist))
 
@@ -99,7 +108,17 @@ def verify_summary(body: VerifyIn, request: Request, db: Session = Depends(get_d
         raise ApiError("FORBIDDEN", "Only a doctor can doctor-verify a summary.")
     if summary.verification_status == "DOCTOR_VERIFIED" and body.action != "DOCTOR_VERIFIED":
         raise ApiError("STATE_CONFLICT", "AI must not alter a doctor-verified record. Ask the doctor to create a new version.")
-    nxt = apply_verification(db, summary, body.action, visit)
+    is_doctor = user.role in {"DOCTOR", "ADMIN"} and body.action in {"DOCTOR_VERIFIED", "REJECTED"}
+    nxt = apply_verification(
+        db,
+        summary,
+        body.action,
+        visit,
+        actor_name=user.display_name if is_doctor else None,
+        actor_id=user.login_id if is_doctor else None,
+        actor_user_id=user.id if is_doctor else None,
+    )
+    db.flush()  # assign nxt.id before the audit row is written
     audit(
         db,
         actor_user_id=user.id,
@@ -107,7 +126,7 @@ def verify_summary(body: VerifyIn, request: Request, db: Session = Depends(get_d
         resource_type="summary",
         resource_id=nxt.id,
         ip=request.client.host if request.client else None,
-        meta={"action": body.action, "version": nxt.version},
+        meta={"action": body.action, "version": nxt.version, "visitId": visit.id, "summaryId": nxt.id},
     )
     db.commit()
     return ok(summary_out(nxt))

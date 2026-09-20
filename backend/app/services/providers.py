@@ -7,7 +7,7 @@ from abc import ABC, abstractmethod
 
 class AIProvider(ABC):
     @abstractmethod
-    def structure_history(self, answers: dict, pathway: str) -> dict: ...
+    def structure_history(self, answers: dict, pathway: str, base: dict | None = None) -> dict: ...
 
     @abstractmethod
     def generate_summary(self, context: dict) -> dict: ...
@@ -28,32 +28,64 @@ class OCRProvider(ABC):
     def extract(self, file_bytes: bytes, mime: str, filename: str) -> dict: ...
 
 
+def _split_list(text: str) -> list[str]:
+    return [m.strip() for m in (text or "").replace(";", ",").split(",") if m.strip()]
+
+
 class MockAIProvider(AIProvider):
-    def structure_history(self, answers: dict, pathway: str) -> dict:
+    def structure_history(self, answers: dict, pathway: str, base: dict | None = None) -> dict:
+        """Assemble structured history strictly from captured answers.
+
+        When a returning patient carried forward previous information
+        (``base``), previous fields are kept as context and only overridden
+        by current answers that actually changed something. Missing values
+        stay empty — they are never turned into negative statements.
+        """
+        base = base or {}
         hpi_bits = []
         meds, allergies = [], []
-        pmh = psh = family = personal = concerns = chief = ""
+        pmh = base.get("pastMedicalHistory") or ""
+        psh = base.get("pastSurgicalHistory") or ""
+        family = base.get("familyHistory") or ""
+        personal = ""
+        concerns = ""
+        chief = ""
+        base_meds = [m for m in (base.get("medications") or []) if m]
+        base_allergies = [a for a in (base.get("allergies") or []) if a]
         ros: dict = {}
-        for qid, payload in answers.items():
+        reuse_note = ""
+        for qid, payload in (answers or {}).items():
             value = payload.get("value") if isinstance(payload, dict) else payload
             field = payload.get("field") if isinstance(payload, dict) else "hpi"
             if value in (None, "", "skip"):
                 continue
             text = str(value)
+            low = text.strip().lower()
             if field == "chiefComplaint":
                 chief = text
             elif field == "hpi":
                 hpi_bits.append(f"{qid.replace('_', ' ')}: {text}")
             elif field == "medications":
-                if text.lower() not in {"none", "no", "nil"}:
-                    meds.extend([m.strip() for m in text.replace(";", ",").split(",") if m.strip()])
+                if low in {"none", "no", "nil", "no change"}:
+                    if low in {"none", "no", "nil"}:
+                        meds = []  # patient explicitly says none now
+                    # "no change" keeps previous list
+                else:
+                    meds = _split_list(text)  # current list replaces previous
             elif field == "allergies":
-                if text.lower() not in {"none", "no", "nil"}:
-                    allergies.extend([a.strip() for a in text.replace(";", ",").split(",") if a.strip()])
+                if low in {"none", "no", "nil"}:
+                    pass  # no *new* allergies; keep previous ones
+                else:
+                    new_ones = _split_list(text)
+                    allergies = list(dict.fromkeys(base_allergies + new_ones))
             elif field == "pastMedicalHistory":
-                pmh = (pmh + "; " if pmh else "") + text
+                if low in {"none", "no", "nil"}:
+                    pass  # nothing new; previous history stays as-is
+                else:
+                    pmh = (pmh + "; " if pmh else "") + text
             elif field == "pastSurgicalHistory":
-                psh = text
+                if low not in {"none", "no", "nil"}:
+                    psh = text
             elif field == "familyHistory":
                 family = text
             elif field == "personalHistory":
@@ -62,9 +94,20 @@ class MockAIProvider(AIProvider):
                 concerns = text
             elif field == "reviewOfSystems":
                 ros[qid] = text
+        if base and not chief:
+            # Carried-forward chief complaint is context only unless the
+            # patient restated a current problem.
+            chief = ""
+            reuse_note = "Returning patient — previous context on file; current answers below."
+        if base:
+            meds = list(dict.fromkeys(meds if meds else base_meds))
+            allergies = list(dict.fromkeys(allergies if allergies else base_allergies))
+        hpi = ". ".join(hpi_bits)
+        if reuse_note:
+            hpi = (reuse_note + " " if hpi else reuse_note) + hpi
         return {
-            "chiefComplaint": chief or pathway.replace("_", " ").title(),
-            "hpi": ". ".join(hpi_bits),
+            "chiefComplaint": chief or (pathway.replace("_", " ").title() if pathway != "RETURNING" else "Returning visit — see current symptoms"),
+            "hpi": hpi,
             "pastMedicalHistory": pmh,
             "pastSurgicalHistory": psh,
             "medications": meds,
@@ -74,6 +117,7 @@ class MockAIProvider(AIProvider):
             "reviewOfSystems": ros,
             "investigations": [],
             "patientConcerns": concerns,
+            "carriedForwardFrom": base.get("previousVisitId") if base else None,
         }
 
     def generate_summary(self, context: dict) -> dict:

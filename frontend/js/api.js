@@ -35,7 +35,12 @@
     if (t && !isLogin && path.indexOf("access_token=") === -1) {
       url += (path.indexOf("?") >= 0 ? "&" : "?") + "access_token=" + encodeURIComponent(t);
     }
-    const res = await fetch(url, Object.assign({ credentials: "same-origin" }, opts, { headers }));
+    let res = await fetch(url, Object.assign({ credentials: "same-origin" }, opts, { headers }));
+    if (res.status === 429) {
+      // Brief burst exceeded the rate limit — one transparent retry.
+      await new Promise((r) => setTimeout(r, 1500));
+      res = await fetch(url, Object.assign({ credentials: "same-origin" }, opts, { headers }));
+    }
     let body = null;
     try { body = await res.json(); } catch (_e) { body = null; }
     if (!body) {

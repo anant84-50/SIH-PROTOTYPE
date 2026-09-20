@@ -8,99 +8,63 @@
   <link rel="stylesheet" href="/css/layout.css" />
   <link rel="stylesheet" href="/css/components.css" />
   <link rel="stylesheet" href="/css/doctor.css" />
-  <link rel="stylesheet" href="/css/site.css" />
 </head>
 <body>
   <div class="shell">
     <aside class="side">
       <div class="brand">
         <img src="/assets/emblem.png" alt="" />
-        <div><h1>Preclinic IQ AI</h1><small data-i18n="clinician">Clinician desk</small></div>
+        <div><h1>Preclinic IQ AI</h1><small>Clinician desk</small></div>
       </div>
-      <div class="lang-switch dark">
+      <div class="lang-switch dark" id="langSwitch">
         <button type="button" data-lang="en">EN</button>
         <button type="button" data-lang="hi">हिं</button>
         <button type="button" data-lang="ta">த</button>
         <button type="button" data-lang="bn">বাং</button>
       </div>
-      <nav class="nav">
-        <a href="/doctor" class="active" data-i18n="intakeQ">Intake queue</a>
-        <a href="#" id="logoutBtn" data-i18n="navOut">Sign out</a>
+      <nav class="nav" id="docNav">
+        <a href="#/" data-route="dashboard"><span class="ic-slot"></span><span data-i18n="navDash">Dashboard</span></a>
+        <a href="#/queue" data-route="queue"><span class="ic-slot"></span><span data-i18n="navQueue">Patient Queue</span></a>
+        <a href="#/emergency" data-route="emergency"><span class="ic-slot"></span><span data-i18n="navEm">Emergency Desk</span></a>
+        <a href="#/patients" data-route="patients"><span class="ic-slot"></span><span data-i18n="navRec">Patient Records</span></a>
+        <a href="#/summaries" data-route="summaries"><span class="ic-slot"></span><span data-i18n="navSum">AI Summaries</span></a>
+        <a href="#/documents" data-route="documents"><span class="ic-slot"></span><span data-i18n="navDocs">Documents</span></a>
+        <a href="#/pending" data-route="pending"><span class="ic-slot"></span><span data-i18n="navPending">Pending Reviews</span></a>
+        <a href="#/verified" data-route="verified"><span class="ic-slot"></span><span data-i18n="navVerified">Verified Cases</span></a>
+        <a href="#/activity" data-route="activity"><span class="ic-slot"></span><span data-i18n="navAct">Clinical Activity</span></a>
+        <a href="#/profile" data-route="profile"><span class="ic-slot"></span><span data-i18n="navProf">Doctor Profile</span></a>
+        <a href="#/notifications" data-route="notifications"><span class="ic-slot"></span><span data-i18n="navNotif">Notifications</span></a>
+        <a href="#/tutorial" data-route="tutorial"><span class="ic-slot"></span><span data-i18n="tutNav">Tutorial</span></a>
+        <a href="#/settings" data-route="settings"><span class="ic-slot"></span><span data-i18n="navSettings">Settings</span></a>
+        <a href="#" id="logoutBtn" class="logout-item"><span class="ic-slot"></span><span data-i18n="navOut">Sign out</span></a>
       </nav>
       <div class="side-foot" data-i18n="sideFootD">AI drafts are never doctor-verified until you say so. Sources stay attached.</div>
     </aside>
     <main class="main">
       <div class="topbar">
         <div>
-          <div class="eyebrow" data-i18n="kay">Kayachikitsa · Pre-clinical context</div>
-          <h2 data-i18n="queueTitle">Today's prepared patients</h2>
+          <div class="eyebrow" id="pageEyebrow">Kayachikitsa · Pre-clinical context</div>
+          <h2 id="pageTitle">Today's Clinical Desk</h2>
         </div>
-        <div class="who"><strong id="whoName">—</strong><span class="small muted" id="whoMeta"></span></div>
+        <div class="top-actions">
+          <div class="who" id="whoBox"></div>
+          <button class="btn ghost tiny" id="newAlertBtn" hidden></button>
+        </div>
       </div>
       <div id="emergencyBanner" class="banner-em hidden"></div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="eyebrow" data-i18n="intakeQ">Intake queue</div>
-          <div class="table-wrap">
-            <table id="queueTable">
-              <thead><tr><th>Patient ID</th><th data-i18n="fullName">Name</th><th>Pathway</th><th>Status</th><th>Started</th></tr></thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card">
-          <div class="eyebrow" data-i18n="emInbox">Emergency inbox</div>
-          <p class="small muted">Direct patient alerts reach this desk and NexusCare admin at once.</p>
-          <div id="emList"></div>
-        </div>
-      </div>
-      <div class="card" style="margin-top:16px">
-        <div class="eyebrow">Saved patient history</div>
-        <p class="small muted">Open any patient to see visits, AYUSH, timeline and files they uploaded.</p>
-        <div id="allPatients"></div>
-      </div>
-
-      <div id="chartEmpty" class="card" style="margin-top:16px">
-        <p class="muted" data-i18n="pickRow">Select a row in the queue to open the prepared chart. Nothing here is a prescription.</p>
-      </div>
-
-      <div id="chart" class="hidden" style="margin-top:16px">
-        <div class="card">
-          <div class="eyebrow" data-i18n="prepared">Prepared chart</div>
-          <h3 id="pName"></h3>
-          <p class="mono small" id="pMeta"></p>
-        </div>
-        <div class="chart-cols" style="margin-top:12px">
-          <div>
-            <div class="card"><div class="eyebrow" data-i18n="clinHist">Clinical history</div><div id="histBox"></div></div>
-            <div class="card" style="margin-top:12px"><div class="eyebrow" data-i18n="ayushH">AYUSH history</div><div id="ayushBox"></div></div>
-            <div class="card" style="margin-top:12px"><div class="eyebrow" data-i18n="aiSum">AI summary · source-linked</div>
-              <div id="sumMeta"></div>
-              <div class="field" style="margin-top:8px"><label data-i18n="narrative">Narrative (editing creates a new version)</label><textarea id="sumEdit" rows="6"></textarea></div>
-              <div class="btn-row">
-                <button class="btn tiny" id="saveSum" data-i18n="saveVer">Save version</button>
-                <button class="btn tiny ok" id="verifySum" data-i18n="docVerify">Doctor verify</button>
-                <button class="btn tiny ghost" id="rejectSum" data-i18n="rejectDraft">Reject draft</button>
-              </div>
-              <div id="srcBox" style="margin-top:10px"></div>
-            </div>
-          </div>
-          <div>
-            <div class="card"><div class="eyebrow" data-i18n="conflicts">Conflicts</div><div id="conflictBox"></div></div>
-            <div class="card" style="margin-top:12px"><div class="eyebrow" data-i18n="timeline">Timeline</div><div class="timeline" id="tlBox"></div></div>
-            <div class="card" style="margin-top:12px"><div class="eyebrow" data-i18n="documents">Documents</div><div id="docBox"></div></div>
-          </div>
-        </div>
-      </div>
+      <main id="docMain" aria-live="polite"></main>
     </main>
   </div>
-  <script src="/js/boot.js?v=8"></script>
-  <script src="/js/api.js?v=8"></script>
-  <script src="/js/auth.js"></script>
-  <script src="/js/common.js"></script>
-  <script src="/js/i18n.js"></script>
-  <script src="/js/documents.js"></script>
-  <script src="/js/emergency.js"></script>
-  <script src="/js/doctor.js"></script>
+  <button class="fab-em" id="fabEm" title="Emergency assistance" hidden></button>
+  <script src="/js/boot.js?v=9"></script>
+  <script src="/js/api.js?v=12"></script>
+  <script src="/js/auth.js?v=9"></script>
+  <script src="/js/common.js?v=11"></script>
+  <script src="/js/i18n.js?v=12"></script>
+  <script src="/js/emergency.js?v=9"></script>
+  <script src="/js/docViewer.js?v=12"></script>
+  <script src="/js/doctorApp.js?v=13"></script>
+  <script src="/js/doctorCase.js?v=10"></script>
+  <script src="/js/tutorial.js?v=2"></script>
 </body>
 </html>

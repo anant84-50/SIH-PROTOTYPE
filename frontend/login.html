@@ -4,79 +4,117 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sign in · Preclinic IQ AI</title>
-  <link rel="stylesheet" href="/css/base.css" />
-  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/base.css?v=12" />
+  <link rel="stylesheet" href="/css/layout.css?v=12" />
 </head>
-<body>
-  <div class="auth-wrap">
-    <div class="card auth-card">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:14px">
-        <div class="brand" style="margin:0">
-          <img src="/assets/emblem.png" alt="" width="46" height="46" />
-          <div>
-            <h1>Preclinic IQ AI</h1>
-            <small data-i18n="authOnly">Authorized access only</small>
-          </div>
+<body class="auth-page">
+  <div class="auth-split">
+    <section class="auth-brand-panel">
+      <a class="brand auth-home" href="/" aria-label="Back to institute page">
+        <img src="/assets/emblem.png" alt="Preclinic IQ AI emblem" />
+        <div>
+          <h1>Preclinic IQ AI</h1>
+          <small data-i18n="brandSub">Ministry of Ayush · AIIA</small>
         </div>
-        <div class="lang-switch">
-          <button type="button" data-lang="en">EN</button>
-          <button type="button" data-lang="hi">हिं</button>
-          <button type="button" data-lang="ta">த</button>
-          <button type="button" data-lang="bn">বাং</button>
-        </div>
+      </a>
+      <div class="auth-tagline">
+        <h2 data-i18n="authH1">From a patient’s first word to a doctor’s verified chart.</h2>
+        <p class="muted" data-i18n="authLead">Voice, text and documents become a source-linked clinical story — with AYUSH history as a first-class record. The doctor still decides. The model never prescribes.</p>
       </div>
-      <form id="loginForm" action="#" method="post" onsubmit="return false;">
-        <div class="role-switch" id="roles">
-          <button type="button" data-role="PATIENT" class="on" data-i18n="rolePatient">Patient</button>
-          <button type="button" data-role="DOCTOR" data-i18n="roleDoctor">Doctor</button>
-          <button type="button" data-role="ADMIN" data-i18n="roleAdmin">Admin</button>
-        </div>
-        <div class="field">
-          <label id="idLabel" data-i18n="idPatient">Patient ID</label>
-          <input id="identifier" autocomplete="username" placeholder="PCI-2026-000001" />
-        </div>
-        <div class="field">
-          <label data-i18n="password">Password</label>
-          <input id="password" type="password" autocomplete="current-password" />
-        </div>
-        <button class="btn" id="loginBtn" type="button" style="width:100%" data-i18n="enter">Enter</button>
-        <p class="small muted" id="hint" style="margin-top:14px"></p>
-        <p class="small" id="loginErr" style="color:#9b2c2c;min-height:1.2em"></p>
-      </form>
-      <hr class="rule" />
-      <details>
-        <summary class="small" data-i18n="newReg">New patient registration</summary>
-        <div class="field" style="margin-top:12px"><label data-i18n="fullName">Full name</label><input id="regName" /></div>
-        <div class="grid-2">
-          <div class="field"><label data-i18n="dob">Date of birth</label><input id="regDob" type="date" /></div>
-          <div class="field"><label data-i18n="sex">Sex</label>
-            <select id="regSex">
-              <option value="Female" data-i18n="sexF">Female</option>
-              <option value="Male" data-i18n="sexM">Male</option>
-              <option value="Other" data-i18n="sexO">Other</option>
-              <option value="Prefer not to say" data-i18n="sexN">Prefer not to say</option>
-            </select>
+      <div class="auth-flow" aria-hidden="true">
+        <div class="flow-node"><span class="fi">P</span><em>Patient</em></div>
+        <span class="flow-link"><i></i></span>
+        <div class="flow-node voice"><span class="fi">◉</span><em>Voice</em></div>
+        <span class="flow-link"><i></i></span>
+        <div class="flow-node ai"><span class="fi">✦</span><em>AI</em></div>
+        <span class="flow-link"><i></i></span>
+        <div class="flow-node struct"><span class="fi">▤</span><em>Structured</em></div>
+        <span class="flow-link"><i></i></span>
+        <div class="flow-node doctor"><span class="fi">✚</span><em>Doctor</em></div>
+      </div>
+      <ul class="auth-points">
+        <li data-i18n="authPt1">English · हिन्दी · தமிழ் · বাংলা — transcripts stay in the language you speak</li>
+        <li data-i18n="authPt2">Real documents: PDF / JPG / PNG with OCR &amp; extraction status</li>
+        <li data-i18n="authPt3">Deterministic emergency rules — no AI guesswork in safety</li>
+        <li data-i18n="authPt4">Doctor verification is a real, audited state change</li>
+      </ul>
+    </section>
+    <section class="auth-form-panel">
+      <div class="card auth-card">
+        <div class="auth-card-head">
+          <div>
+            <h3 data-i18n="authSignIn">Sign in to your desk</h3>
+            <small class="muted" data-i18n="authOnly">Authorized access only</small>
+          </div>
+          <div class="lang-switch" id="langSwitch">
+            <button type="button" data-lang="en">EN</button>
+            <button type="button" data-lang="hi">हिं</button>
+            <button type="button" data-lang="ta">த</button>
+            <button type="button" data-lang="bn">বাং</button>
           </div>
         </div>
-        <div class="field"><label data-i18n="phone">Phone</label><input id="regPhone" /></div>
-        <div class="field"><label data-i18n="choosePw">Choose a password (min 8)</label><input id="regPw" type="password" /></div>
-        <button class="btn ghost" type="button" id="regBtn" data-i18n="createId">Create patient identity</button>
-        <p class="small muted" id="regOut"></p>
-      </details>
-      <p class="small" style="margin-top:16px"><a href="/" data-i18n="backHome">Back to institute page</a></p>
-    </div>
+        <form id="loginForm" action="#" method="post" onsubmit="return false;">
+          <div class="role-switch" id="roles">
+            <button type="button" data-role="PATIENT" class="on" data-i18n="rolePatient">Patient</button>
+            <button type="button" data-role="DOCTOR" data-i18n="roleDoctor">Doctor</button>
+            <button type="button" data-role="ADMIN" data-i18n="roleAdmin">Admin</button>
+          </div>
+          <div class="field">
+            <label id="idLabel" data-i18n="idPatient">Patient ID</label>
+            <div class="input-ic">
+              <input id="identifier" autocomplete="username" placeholder="PCI-2026-000001" />
+            </div>
+          </div>
+          <div class="field">
+            <label data-i18n="password">Password</label>
+            <div class="input-ic">
+              <input id="password" type="password" autocomplete="current-password" />
+              <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show password">
+                <svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6zM12 12a2.5 2.5 0 1 0 .01 0z"/></svg>
+              </button>
+            </div>
+          </div>
+          <button class="btn gold" id="loginBtn" type="button" style="width:100%;padding:12px" data-i18n="enter">Enter</button>
+          <p class="small muted" id="hint" style="margin-top:12px"></p>
+          <p class="small" id="loginErr" style="color:#9b2c2c;min-height:1.2em"></p>
+        </form>
+        <hr class="rule" />
+        <details id="regBox">
+          <summary class="small" data-i18n="newReg">New patient registration</summary>
+          <div class="field" style="margin-top:12px"><label data-i18n="fullName">Full name</label><input id="regName" /></div>
+          <div class="grid-2">
+            <div class="field"><label data-i18n="dob">Date of birth</label><input id="regDob" type="date" /></div>
+            <div class="field"><label data-i18n="sex">Sex</label>
+              <select id="regSex">
+                <option value="Female" data-i18n="sexF">Female</option>
+                <option value="Male" data-i18n="sexM">Male</option>
+                <option value="Other" data-i18n="sexO">Other</option>
+                <option value="Prefer not to say" data-i18n="sexN">Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+          <div class="field"><label data-i18n="phone">Phone</label><input id="regPhone" /></div>
+          <div class="field"><label data-i18n="choosePw">Choose a password (min 8)</label><input id="regPw" type="password" /></div>
+          <button class="btn ghost" type="button" id="regBtn" data-i18n="createId">Create patient identity</button>
+          <p class="small muted" id="regOut"></p>
+        </details>
+        <p class="small" style="margin-top:16px"><a href="/" data-i18n="backHome">Back to institute page</a></p>
+      </div>
+    </section>
   </div>
-  <script src="/js/boot.js?v=8"></script>
-  <script src="/js/api.js?v=8"></script>
-  <script src="/js/auth.js"></script>
-  <script src="/js/common.js"></script>
-  <script src="/js/i18n.js"></script>
+  <script src="/js/boot.js?v=11"></script>
+  <script src="/js/api.js?v=12"></script>
+  <script src="/js/auth.js?v=11"></script>
+  <script src="/js/common.js?v=11"></script>
+  <script src="/js/i18n.js?v=13"></script>
   <script>
     const ui = PreclinicUI;
     const I = PreclinicI18n;
     I.bindSwitch();
     I.apply();
-    let role = "PATIENT";
+    // Deep links from the homepage CTAs: /login?role=patient | doctor | admin
+    const urlRole = (new URLSearchParams(location.search).get("role") || "").toUpperCase();
+    let role = (["PATIENT", "DOCTOR", "ADMIN"].includes(urlRole) ? urlRole : "PATIENT");
     const dest = { ADMIN: "/admin", DOCTOR: "/doctor", PATIENT: "/patient" };
 
     function applyRole(r) {
@@ -86,10 +124,24 @@
       document.getElementById("idLabel").textContent = I.t(key);
       document.getElementById("identifier").placeholder = r === "DOCTOR" ? "DOC-001" : r === "ADMIN" ? "NexusCare" : "PCI-2026-000001";
       document.getElementById("hint").textContent = I.t(r === "DOCTOR" ? "hintD" : r === "ADMIN" ? "hintA" : "hintP");
+      const regBox = document.getElementById("regBox");
+      if (regBox) regBox.style.display = r === "PATIENT" ? "" : "none";
     }
     document.querySelectorAll("#roles button").forEach((b) => b.addEventListener("click", () => applyRole(b.getAttribute("data-role"))));
     document.addEventListener("preclinic:lang", () => { I.apply(); applyRole(role); });
-    applyRole("PATIENT");
+    applyRole(role);
+
+    // Password show / hide
+    const pw = document.getElementById("password");
+    const pwToggle = document.getElementById("pwToggle");
+    pwToggle.addEventListener("click", () => {
+      const show = pw.type === "password";
+      pw.type = show ? "text" : "password";
+      pwToggle.setAttribute("aria-label", show ? "Hide password" : "Show password");
+      pwToggle.classList.toggle("on", show);
+      pw.focus();
+    });
+
     fetch("/api/v1/health").then(function (r) { return r.json(); }).then(function (h) {
       if (!h || !h.success) showErr("API is not healthy. Restart the server.");
     }).catch(function () {
@@ -104,8 +156,8 @@
     async function doLogin(ev) {
       if (ev) ev.preventDefault();
       const id = document.getElementById("identifier").value.trim();
-      const pw = document.getElementById("password").value;
-      if (!id || !pw) { showErr("Enter ID and password."); return false; }
+      const pwVal = pw.value;
+      if (!id || !pwVal) { showErr("Enter ID and password."); return false; }
       const btn = document.getElementById("loginBtn");
       btn.disabled = true;
       showErr("");
@@ -115,7 +167,7 @@
         const r = await fetch("/api/v1/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json", "Accept": "application/json" },
-          body: JSON.stringify({ identifier: id, password: pw, role: guessed })
+          body: JSON.stringify({ identifier: id, password: pwVal, role: guessed })
         });
         const text = await r.text();
         let res = null;
@@ -147,7 +199,7 @@
     }
     document.getElementById("loginBtn").addEventListener("click", doLogin);
     document.getElementById("loginForm").addEventListener("submit", doLogin);
-    document.getElementById("password").addEventListener("keydown", function (e) { if (e.key === "Enter") doLogin(e); });
+    pw.addEventListener("keydown", function (e) { if (e.key === "Enter") doLogin(e); });
     document.getElementById("identifier").addEventListener("keydown", function (e) { if (e.key === "Enter") doLogin(e); });
 
     document.getElementById("regBtn").addEventListener("click", async () => {

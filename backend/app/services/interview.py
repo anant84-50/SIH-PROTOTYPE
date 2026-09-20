@@ -1,9 +1,15 @@
 from sqlalchemy.orm import Session
 
-from app.models.tables import Conversation, ConversationMessage, Visit
+from app.models.tables import ClinicalHistory, Conversation, ConversationMessage, Visit
 from app.services.interview_i18n import localize_bank
-from app.services.ontology import is_skip, pathway_def
+from app.services.ontology import is_skip
 from app.services.providers import get_ai
+
+# Answer states for the doctor intake view.
+ANSWERED = "ANSWERED"
+SKIPPED = "SKIPPED"
+PREFER_NOT = "PREFER_NOT"
+NOT_PROVIDED = "NOT_PROVIDED"
 
 
 def _lang(conv: Conversation, visit: Visit | None = None) -> str:
@@ -11,7 +17,51 @@ def _lang(conv: Conversation, visit: Visit | None = None) -> str:
     return (state.get("language") or (visit.language if visit else None) or "en")[:2]
 
 
-def start_session(db: Session, visit: Visit) -> tuple[Conversation, dict]:
+def _bank_key(conv: Conversation) -> str:
+    return (conv.state or {}).get("bank") or conv.pathway
+
+
+def _question_bank(conv: Conversation) -> list[dict]:
+    _opening, questions = localize_bank(_bank_key(conv), _lang(conv))
+    return questions
+
+
+def _opening(conv: Conversation) -> str:
+    opening, _q = localize_bank(_bank_key(conv), _lang(conv))
+    return opening
+
+
+def _previous_reuse_base(db: Session, previous_visit_id: str) -> dict:
+    """Pull the best previous structured information to carry forward.
+
+    Prefers a doctor-verified history version; otherwise the latest version.
+    Values are carried as a *base* — the returning interview still asks what
+    may have changed, and old values are never asserted as current.
+    """
+    rows = (
+        db.query(ClinicalHistory)
+        .filter(ClinicalHistory.visit_id == previous_visit_id)
+        .order_by(ClinicalHistory.version.desc())
+        .all()
+    )
+    if not rows:
+        return {}
+    verified = [r for r in rows if r.verification_status == "DOCTOR_VERIFIED"]
+    chosen = verified[0] if verified else rows[0]
+    return {
+        "previousVisitId": previous_visit_id,
+        "sourceVerificationStatus": chosen.verification_status,
+        "chiefComplaint": chosen.chief_complaint or "",
+        "pastMedicalHistory": chosen.past_medical_history or "",
+        "pastSurgicalHistory": chosen.past_surgical_history or "",
+        "familyHistory": chosen.family_history or "",
+        "patientConcerns": chosen.patient_concerns or "",
+        "medications": list(chosen.medications or []),
+        "allergies": list(chosen.allergies or []),
+    }
+
+
+def start_session(db: Session, visit: Visit, reuse_from: str | None = None) -> tuple[Conversation, dict]:
     existing = db.query(Conversation).filter(Conversation.visit_id == visit.id).first()
     if existing:
         state = dict(existing.state or {})
@@ -19,28 +69,34 @@ def start_session(db: Session, visit: Visit) -> tuple[Conversation, dict]:
             state["language"] = visit.language
             existing.state = state
         return existing, _next_payload(existing)
-    opening, _bank = localize_bank(visit.complaint_pathway, visit.language or "en")
+
+    bank = visit.complaint_pathway
+    state: dict = {
+        "cursor": 0,
+        "answers": {},
+        "phase": "pathway",
+        "asked": [],
+        "language": visit.language or "en",
+    }
+    if reuse_from:
+        base = _previous_reuse_base(db, reuse_from)
+        if base:
+            bank = "RETURNING"
+            state["bank"] = "RETURNING"
+            state["reuseBase"] = base
+            state["reusedFrom"] = reuse_from
+
     conv = Conversation(
         visit_id=visit.id,
         patient_uuid=visit.patient_uuid,
         pathway=visit.complaint_pathway,
-        state={"cursor": 0, "answers": {}, "phase": "pathway", "asked": [], "language": visit.language or "en"},
+        state=state,
         is_complete=False,
     )
     db.add(conv)
     db.flush()
-    db.add(ConversationMessage(conversation_id=conv.id, role="assistant", text=opening, question_id="opening"))
+    db.add(ConversationMessage(conversation_id=conv.id, role="assistant", text=_opening(conv), question_id="opening"))
     return conv, _next_payload(conv)
-
-
-def _question_bank(conv: Conversation) -> list[dict]:
-    _opening, questions = localize_bank(conv.pathway, _lang(conv))
-    return questions
-
-
-def _opening(conv: Conversation) -> str:
-    opening, _q = localize_bank(conv.pathway, _lang(conv))
-    return opening
 
 
 def _next_unanswered(conv: Conversation) -> dict | None:
@@ -66,6 +122,8 @@ def _next_payload(conv: Conversation) -> dict:
             "progress": 1,
             "answered": conv.state.get("answers") or {},
             "language": _lang(conv),
+            "returning": bool((conv.state or {}).get("reuseBase")),
+            "reusedFrom": (conv.state or {}).get("reusedFrom"),
         }
     bank = _question_bank(conv)
     done = len(conv.state.get("answers") or {})
@@ -78,6 +136,8 @@ def _next_payload(conv: Conversation) -> dict:
         "answered": conv.state.get("answers") or {},
         "actions": ["answer", "repeat", "i_dont_know", "prefer_not_to_answer"],
         "language": _lang(conv),
+        "returning": bool((conv.state or {}).get("reuseBase")),
+        "reusedFrom": (conv.state or {}).get("reusedFrom"),
     }
 
 
@@ -150,7 +210,9 @@ def apply_message(
 
 
 def missing_fields(conv: Conversation) -> list[str]:
-    pdef = pathway_def(conv.pathway)
+    from app.services.ontology import bank_def
+
+    pdef = bank_def(_bank_key(conv))
     answers = conv.state.get("answers") or {}
     missing = []
     for qid, label in (pdef.get("missing_if") or {}).items():
@@ -162,4 +224,50 @@ def missing_fields(conv: Conversation) -> list[str]:
 
 
 def structure_from_session(conv: Conversation) -> dict:
-    return get_ai().structure_history(conv.state.get("answers") or {}, conv.pathway)
+    answers = conv.state.get("answers") or {}
+    base = (conv.state or {}).get("reuseBase") or None
+    return get_ai().structure_history(answers, _bank_key(conv), base)
+
+
+def intake_view(conv: Conversation) -> dict:
+    """Question-level intake for the doctor workspace.
+
+    Status per question: ANSWED | SKIPPED | PREFER_NOT | NOT_PROVIDED.
+    Never invents values: unasked questions stay NOT_PROVIDED, skips stay skips.
+    """
+    answers = conv.state.get("answers") or {}
+    items = []
+    for q in _question_bank(conv):
+        a = answers.get(q["id"])
+        val = a.get("value") if isinstance(a, dict) else None
+        action = a.get("action") if isinstance(a, dict) else None
+        vtext = (val or "").strip()
+        if a is None:
+            status = NOT_PROVIDED
+        elif action == "prefer_not_to_answer" or vtext.lower() == "prefer not to answer":
+            status = PREFER_NOT
+        elif action == "i_dont_know" or is_skip(vtext) or vtext.lower() == "":
+            status = SKIPPED
+        else:
+            status = ANSWERED
+        items.append(
+            {
+                "id": q["id"],
+                "field": q["field"],
+                "question": q["text"],
+                "type": q["type"],
+                "value": val,
+                "status": status,
+                "inputMode": a.get("inputMode") if isinstance(a, dict) else None,
+            }
+        )
+    answered = sum(1 for i in items if i["status"] == ANSWERED)
+    return {
+        "sessionId": conv.id,
+        "complete": bool(conv.is_complete),
+        "returning": bool((conv.state or {}).get("reuseBase")),
+        "reusedFrom": (conv.state or {}).get("reusedFrom"),
+        "answered": answered,
+        "total": len(items),
+        "items": items,
+    }

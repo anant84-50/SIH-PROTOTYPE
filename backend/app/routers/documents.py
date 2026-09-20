@@ -76,6 +76,28 @@ def download_file(document_id: str, request: Request, db: Session = Depends(get_
     return FileResponse(path, media_type=doc.mime_type or "application/octet-stream", filename=doc.original_filename)
 
 
+@router.get("/{document_id}/view")
+def view_document(document_id: str, request: Request, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    """Authorized inline view (in-app viewers for PDF / image / text).
+
+    Same permission model as download: the caller must be the patient or an
+    authorized doctor/admin for that patient's record. Served inline (no
+    Content-Disposition) and no filesystem paths are exposed.
+    """
+    doc = db.get(Document, document_id)
+    if not doc:
+        raise ApiError("DOCUMENT_NOT_FOUND", "Document was not found.")
+    resolve_patient_scope(doc.patient_uuid, user, db)
+    path = storage_path(doc.storage_key)
+    if not path.exists():
+        raise ApiError("DOCUMENT_NOT_FOUND", "This file is no longer available on the server.")
+    if path.stat().st_size == 0:
+        raise ApiError("FILE_INVALID", "This file is empty or corrupted and cannot be displayed.")
+    audit(db, actor_user_id=user.id, action="document.view", resource_type="document", resource_id=doc.id, ip=request.client.host if request.client else None)
+    db.commit()
+    return FileResponse(path, media_type=doc.mime_type or "application/octet-stream")
+
+
 @router.get("/{document_id}")
 def get_document(document_id: str, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     doc = db.get(Document, document_id)

@@ -149,6 +149,48 @@ COMMON_HISTORY = [
     {"id": "meds_core", "field": "medications", "text": "List current medicines (name and dose if known), or 'none'.", "type": "text"},
 ]
 
+# Bank used when a returning patient chooses to carry forward previously
+# verified information. It only asks what may have changed — it never
+# re-asserts old answers as current.
+RETURNING_BANK = {
+    "label": "Returning visit",
+    "opening": (
+        "We have your previous information on file, so we will not repeat everything. "
+        "We will only ask what may have changed since your last visit. "
+        "Previous answers are not automatically treated as current."
+    ),
+    "questions": [
+        {"id": "changed_since", "field": "hpi", "type": "text",
+         "text": "What has changed since your previous visit?"},
+        {"id": "current_symptoms", "field": "chiefComplaint", "type": "text",
+         "text": "What is your main problem or symptom right now?"},
+        {"id": "current_duration", "field": "hpi", "type": "choice",
+         "text": "How long has the current problem been going on?",
+         "options": ["Just started", "1–3 days", "4–14 days", "More than 2 weeks", "Ongoing from last visit"]},
+        {"id": "current_severity", "field": "hpi", "type": "choice",
+         "text": "Compared with before, how is it now?",
+         "options": ["Better", "About the same", "Worse", "Cannot do daily activity"]},
+        {"id": "current_meds", "field": "medications", "type": "text",
+         "text": "What medicines are you taking now? (List any new or stopped ones, or 'no change')"},
+        {"id": "new_allergies", "field": "allergies", "type": "text",
+         "text": "Any new drug or food allergies since then? Write 'none' if none."},
+        {"id": "new_history", "field": "pastMedicalHistory", "type": "text",
+         "text": "Any new medical conditions, illnesses or surgeries since your last visit?"},
+        {"id": "warning_now", "field": "redFlags", "type": "choice",
+         "text": "Any new warning symptoms — severe pain, trouble breathing, bleeding, fainting, or weakness on one side?",
+         "options": ["None", "Severe pain", "Trouble breathing", "Bleeding", "Fainting", "One-sided weakness"]},
+        {"id": "concerns_now", "field": "patientConcerns", "type": "text",
+         "text": "What would you like the doctor to focus on this time?"},
+    ],
+    "missing_if": {"current_symptoms": "current problem", "current_duration": "duration of current problem"},
+}
+
+
+def bank_def(key: str) -> dict:
+    if key == "RETURNING":
+        return RETURNING_BANK
+    return pathway_def(key)
+
 
 def pathway_def(code: str) -> dict:
     return PATHWAYS.get(code) or PATHWAYS[ComplaintPathway.OTHER.value]

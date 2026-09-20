@@ -8,220 +8,59 @@
   <link rel="stylesheet" href="/css/layout.css" />
   <link rel="stylesheet" href="/css/components.css" />
   <link rel="stylesheet" href="/css/patient.css" />
-  <link rel="stylesheet" href="/css/site.css" />
 </head>
 <body>
   <div class="shell">
     <aside class="side">
       <div class="brand">
         <img src="/assets/emblem.png" alt="" />
-        <div><h1>Preclinic IQ AI</h1><small data-i18n="rolePatient">Patient</small></div>
+        <div><h1>Preclinic IQ AI</h1><small>Patient</small></div>
       </div>
-      <div class="lang-switch dark">
+      <div class="lang-switch dark" id="langSwitch">
         <button type="button" data-lang="en">EN</button>
         <button type="button" data-lang="hi">हिं</button>
         <button type="button" data-lang="ta">த</button>
         <button type="button" data-lang="bn">বাং</button>
       </div>
-      <nav class="nav">
-        <a href="/patient" class="active" data-i18n="navIntake">My intake</a>
-        <a href="/about">What</a>
-        <a href="/how-it-works">How</a>
-        <a href="#" id="logoutBtn" data-i18n="navOut">Sign out</a>
+      <nav class="nav" id="patNav">
+        <a href="#/" data-route="dashboard"><span class="ic-slot"></span><span data-i18n="pDash">My intake</span></a>
+        <a href="#/new-visit" data-route="new"><span class="ic-slot"></span><span data-i18n="pNew">Start New Visit</span></a>
+        <a href="#/history" data-route="history"><span class="ic-slot"></span><span data-i18n="pHist">My History</span></a>
+        <a href="#/documents" data-route="documents"><span class="ic-slot"></span><span data-i18n="pDocs">Documents &amp; Reports</span></a>
+        <a href="#/processing" data-route="processing"><span class="ic-slot"></span><span data-i18n="pProc">Processing Status</span></a>
+        <a href="#/profile" data-route="profile"><span class="ic-slot"></span><span data-i18n="pProfile">My Profile</span></a>
+        <a href="#/notifications" data-route="notifications"><span class="ic-slot"></span><span data-i18n="pNotif">Notifications</span></a>
+        <a href="#/tutorial" data-route="tutorial"><span class="ic-slot"></span><span data-i18n="tutNav">Tutorial</span></a>
+        <a href="#/emergency" data-route="emergency"><span class="ic-slot"></span><span data-i18n="pEm">Emergency Assistance</span></a>
+        <a href="#/settings" data-route="settings"><span class="ic-slot"></span><span data-i18n="pSettings">Settings</span></a>
+        <a href="#" id="logoutBtn" class="logout-item"><span class="ic-slot"></span><span data-i18n="navOut">Sign out</span></a>
       </nav>
       <div class="side-foot" data-i18n="sideFootP">Your record is visible only to you and authorized clinicians. AI does not prescribe.</div>
     </aside>
     <main class="main">
       <div class="topbar">
         <div>
-          <div class="eyebrow" data-i18n="inst">All India Institute of Ayurveda</div>
-          <h2 data-i18n="patientTitle">Patient case-taking</h2>
+          <div class="eyebrow" id="pageEyebrow">All India Institute of Ayurveda</div>
+          <h2 id="pageTitle">My intake</h2>
         </div>
-        <div class="who"><strong id="whoName">—</strong><span class="small muted" id="whoMeta"></span></div>
+        <div class="top-actions">
+          <div class="who" id="whoBox"></div>
+        </div>
       </div>
-
-      <section id="dashView">
-        <div class="grid-2">
-          <div class="card">
-            <div class="eyebrow" data-i18n="namaste">Namaste</div>
-            <h3 id="helloName">Patient</h3>
-            <p class="mono" id="helloId"></p>
-            <p class="muted" id="dashMeta"></p>
-            <div class="dash-actions">
-              <button class="btn" id="startVisit" data-i18n="startVisit">Start a visit</button>
-              <button class="btn ghost" id="openChart" data-i18n="openChart">My timeline &amp; records</button>
-            </div>
-          </div>
-          <div class="card">
-            <div class="eyebrow" data-i18n="recentVisits">Recent visits</div>
-            <div id="visitList"></div>
-          </div>
-        </div>
-        <div class="card" style="margin-top:16px">
-          <div class="eyebrow" data-i18n="longTl">Longitudinal timeline</div>
-          <div class="timeline" id="miniTimeline"></div>
-        </div>
-      </section>
-
-      <section id="flowView" class="hidden">
-        <div class="wizard-head">
-          <div>
-            <div class="eyebrow" id="stepLabel">Step 1 of 7</div>
-            <h3 data-i18n="newVisit">New visit intake</h3>
-          </div>
-          <button class="btn ghost tiny" id="backDash" data-i18n="backDesk">Back to desk</button>
-        </div>
-        <div class="progress"><span id="flowProgress"></span></div>
-
-        <div class="card" id="step1">
-          <h3 data-i18n="langTitle">Language</h3>
-          <p class="muted" data-i18n="langHelp">The interview, buttons and voice input will switch to this language.</p>
-          <div class="options" id="langOptions">
-            <button type="button" class="lang-opt" data-lang="en">English</button>
-            <button type="button" class="lang-opt" data-lang="hi">हिन्दी</button>
-            <button type="button" class="lang-opt" data-lang="ta">தமிழ்</button>
-            <button type="button" class="lang-opt" data-lang="bn">বাংলা</button>
-          </div>
-          <div class="btn-row"><button class="btn" id="toConsent" data-i18n="continue">Continue</button></div>
-        </div>
-
-        <div class="card hidden" id="step2">
-          <h3 data-i18n="consentTitle">Consent</h3>
-          <div class="consent-box" data-i18n="consentBody"></div>
-          <label class="consent-row small"><input type="checkbox" id="consentChk" /> <span data-i18n="consentChk">I agree to proceed with this visit.</span></label>
-          <div class="btn-row"><button class="btn" id="toComplaint" data-i18n="consentGo">Give consent &amp; continue</button></div>
-        </div>
-
-        <div class="card hidden" id="step3">
-          <h3 data-i18n="complaintTitle">What is the main problem today?</h3>
-          <p class="muted" data-i18n="complaintHelp">These are complaint pathways — not diagnoses.</p>
-          <div class="pathway-grid" id="pathways"></div>
-          <div class="field" style="margin-top:14px">
-            <label data-i18n="extraLabel">Add a few words if you wish (needed for Other)</label>
-            <textarea id="chiefExtra" rows="2" data-i18n-placeholder="extraPh" placeholder="e.g. fever since Sunday after travel"></textarea>
-          </div>
-          <div class="btn-row"><button class="btn" id="toInterview" data-i18n="beginInt">Begin interview</button></div>
-        </div>
-
-        <div class="card hidden" id="step4">
-          <h3 data-i18n="aiTitle">Interview</h3>
-          <p class="disclaimer" data-i18n="aiHelp">Answer, repeat, skip, or prefer not to say. Already-answered questions are not repeated.</p>
-          <div class="progress"><span id="qProgress"></span></div>
-          <div class="chat" id="chat"></div>
-          <div class="q-current" id="qBox"></div>
-          <div class="options" id="qOptions"></div>
-          <div class="field"><label data-i18n="yourAns">Your answer</label><input id="ansText" data-i18n-placeholder="ansPh" placeholder="Type, or use voice" /></div>
-          <div class="voice-bar">
-            <button class="btn" id="sendAns" data-i18n="send">Send</button>
-            <button class="btn ghost" id="voiceBtn" data-i18n="voice">Voice</button>
-            <span id="recDot" class="dot-rec hidden"></span>
-            <button class="btn ghost tiny" id="repeatQ" data-i18n="repeat">Repeat</button>
-            <button class="btn ghost tiny" id="skipAns" data-i18n="dunno">I don't know</button>
-            <button class="btn ghost tiny" id="preferNot" data-i18n="preferNot">Prefer not to answer</button>
-          </div>
-          <p class="hidden" id="interviewDone" style="margin-top:16px"><button class="btn gold" id="toManual" data-i18n="toAyush">Continue to history &amp; AYUSH</button></p>
-        </div>
-
-        <div class="card hidden" id="step5">
-          <h3 data-i18n="histTitle">Manual history &amp; AYUSH</h3>
-          <div class="grid-2">
-            <div>
-              <div class="field"><label data-i18n="pmh">Past medical history</label><textarea id="pmh" rows="2"></textarea></div>
-              <div class="field"><label data-i18n="psh">Past surgical history</label><textarea id="psh" rows="2"></textarea></div>
-              <div class="field"><label data-i18n="fh">Family history</label><textarea id="fh" rows="2"></textarea></div>
-              <div class="field"><label data-i18n="worries">What worries you most</label><textarea id="concerns" rows="2"></textarea></div>
-            </div>
-            <div>
-              <p class="eyebrow" data-i18n="dashavidha">Dashavidha / nidana</p>
-              <div class="field"><label>Prakriti</label><input id="prakriti" placeholder="Vata / Pitta / Kapha" /></div>
-              <div class="field"><label>Vikriti</label><input id="vikriti" /></div>
-              <div class="field"><label>Ahara</label><input id="ahara" /></div>
-              <div class="field"><label>Vihara</label><input id="vihara" /></div>
-              <div class="field"><label>Nidana</label><input id="nidana" /></div>
-            </div>
-          </div>
-          <div class="btn-row"><button class="btn" id="saveManual" data-i18n="saveDocs">Save &amp; upload documents</button></div>
-        </div>
-
-        <div class="card hidden" id="step6">
-          <h3 data-i18n="docsTitle">Documents</h3>
-          <p class="muted" data-i18n="docsHelp">Prescriptions, labs, discharge notes. Uncertain handwriting stays NEEDS_REVIEW.</p>
-          <div class="field"><label data-i18n="type">Type</label>
-            <select id="docType">
-              <option>PRESCRIPTION</option><option>LAB_REPORT</option><option>DISCHARGE_SUMMARY</option>
-              <option>MEDICAL_CERTIFICATE</option><option>IMAGING_REPORT</option><option>PREVIOUS_DIAGNOSIS</option><option>OTHER</option>
-            </select>
-          </div>
-          <div class="field"><label data-i18n="file">File (PDF, JPG, PNG)</label><input id="docFile" type="file" /></div>
-          <div class="btn-row">
-            <button class="btn" id="docUpload" data-i18n="upload">Upload &amp; process</button>
-            <button class="btn gold" id="toSummary" data-i18n="genSum">Generate AI summary</button>
-          </div>
-          <div id="docOut" style="margin-top:12px"></div>
-        </div>
-
-        <div class="card hidden" id="step7">
-          <h3 data-i18n="review">Review the draft</h3>
-          <div id="sumStatus"></div>
-          <p id="sumBody" style="margin-top:12px"></p>
-          <div id="sumMissing"></div>
-          <p class="disclaimer" data-i18n="confirmHelp">Confirming means you agree this is a fair account of what you said — not a diagnosis.</p>
-          <div class="btn-row">
-            <button class="btn ok" id="confirmSum" data-i18n="confirm">I confirm this draft</button>
-            <button class="btn ghost" id="rejectSum" data-i18n="wrong">This is wrong</button>
-          </div>
-        </div>
-      </section>
-
-      <section id="chartView" class="hidden">
-        <div class="btn-row"><button class="btn ghost tiny" id="backDash2" data-i18n="back">Back</button></div>
-        <h3><span data-i18n="record">Record</span> · <span class="mono" id="chartId"></span></h3>
-        <div class="grid-2">
-          <div class="card"><div class="eyebrow" data-i18n="timeline">Timeline</div><div class="timeline" id="chartTl"></div></div>
-          <div>
-            <div class="card"><div class="eyebrow" data-i18n="openCf">Open conflicts</div><div id="chartConflicts"></div></div>
-            <div class="card" style="margin-top:12px">
-              <div class="eyebrow" data-i18n="documents">Documents</div>
-              <div class="field"><label data-i18n="file">File (PDF, JPG, PNG)</label><input id="histFile" type="file" /></div>
-              <div class="field"><label data-i18n="type">Type</label>
-                <select id="histType">
-                  <option>PRESCRIPTION</option><option>LAB_REPORT</option><option>DISCHARGE_SUMMARY</option>
-                  <option>MEDICAL_CERTIFICATE</option><option>IMAGING_REPORT</option><option>PREVIOUS_DIAGNOSIS</option><option>OTHER</option>
-                </select>
-              </div>
-              <button class="btn tiny" id="histUpload" data-i18n="upload">Upload &amp; process</button>
-              <div id="histOut"></div>
-              <div id="chartDocs" style="margin-top:8px"></div>
-            </div>
-            <div class="card" style="margin-top:12px"><div class="eyebrow" data-i18n="visits">Visits</div><div id="chartVisits"></div></div>
-          </div>
-        </div>
-      </section>
+      <main id="patMain" aria-live="polite"></main>
     </main>
   </div>
-  <script src="/js/boot.js?v=8"></script>
-  <script src="/js/api.js?v=8"></script>
-  <script src="/js/auth.js"></script>
-  <script src="/js/common.js"></script>
-  <script src="/js/i18n.js"></script>
-  <script src="/js/intake.js"></script>
-  <script src="/js/documents.js"></script>
-  <script src="/js/emergency.js"></script>
-  <script src="/js/patient.js"></script>
-  <button type="button" class="sos-fab" id="sosFab">Emergency</button>
-  <div id="sosModal" class="modal-back hidden">
-    <div class="modal">
-      <div class="eyebrow">Direct alert</div>
-      <h3>Emergency</h3>
-      <p class="small muted">This notifies the doctor and NexusCare admin immediately. It does not replace calling local emergency services.</p>
-      <div class="field"><label>What is happening now?</label>
-        <textarea id="sosText" rows="4" placeholder="e.g. severe chest pain and cannot breathe"></textarea>
-      </div>
-      <div class="btn-row">
-        <button class="btn warn" id="sosSend">Send alert now</button>
-        <button class="btn ghost" id="sosClose">Close</button>
-      </div>
-    </div>
-  </div>
+  <button class="fab-em" id="fabEm" hidden></button>
+  <script src="/js/boot.js?v=10"></script>
+  <script src="/js/api.js?v=12"></script>
+  <script src="/js/auth.js?v=10"></script>
+  <script src="/js/common.js?v=11"></script>
+  <script src="/js/i18n.js?v=12"></script>
+  <script src="/js/intake.js?v=11"></script>
+  <script src="/js/documents.js?v=10"></script>
+  <script src="/js/emergency.js?v=10"></script>
+  <script src="/js/docViewer.js?v=12"></script>
+  <script src="/js/tutorial.js?v=2"></script>
+  <script src="/js/patient.js?v=15"></script>
 </body>
 </html>

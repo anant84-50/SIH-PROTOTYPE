@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Capabilities · Preclinic IQ AI</title>
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/site.css?v=6" />
+</head>
+<body class="landing">
+  <nav class="pub-nav">
+    <div class="brand">
+      <img src="/assets/emblem.png" alt="" />
+      <div><h1>Preclinic IQ AI</h1><small>Capabilities</small></div>
+    </div>
+    <div class="pub-links">
+      <a href="/">Home</a>
+      <a href="/why">How it helps</a>
+      <a href="/how-it-works">Patient Journey</a>
+      <a href="/capabilities" class="on">Capabilities</a>
+      <a href="/privacy">Safety &amp; Privacy</a>
+      <a href="/roadmap">Roadmap</a><div class="lang-switch dark">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="hi">हिं</button>
+        <button type="button" data-lang="ta">த</button>
+        <button type="button" data-lang="bn">বাং</button>
+      </div>
+      <a class="btn nav-signin" href="/login" style="background:#f4efe4;color:#12211c;border:1px solid #c4a35a;font-weight:700">Sign in</a>
+    </div>
+  </nav>
+  <section class="story">
+    <div class="eyebrow">Implemented in this build</div>
+    <h1>What you can actually use right now.</h1>
+    <p class="muted" style="max-width:64ch">Every capability below is live in the prototype. Items that run on deterministic demo providers (clearly marked) sit behind the same interface a production provider would use — the workflow, permissions and records around them are real.</p>
+    <div class="story-grid">
+      <article class="story-card"><span class="chip leaf">Implemented</span><h3>AI-assisted intake</h3><p>Adaptive, source-linked structured interviews behind a clean provider interface. <span class="muted small">The language model itself is a deterministic demo provider.</span></p></article>
+      <article class="story-card"><span class="chip leaf">Implemented</span><h3>Voice &amp; read-aloud</h3><p>Browser speech recognition for answers and speech synthesis for questions, in all four supported languages. <span class="muted small">Quality depends on the browser’s speech engine.</span></p></article>
+      <article class="story-card"><span class="chip leaf">Implemented</span><h3>Adaptive interview</h3><p>Six complaint pathways plus a returning-visit mode that asks only what may have changed, carrying forward previously verified information.</p></article>
+      <article class="story-card"><span class="chip leaf">Implemented</span><h3>Longitudinal history</h3><p>Every visit, versioned structured history, AYUSH record and timeline event, stored per patient with stable PCI identifiers.</p></article>
+      <article class="story-card"><span class="chip leaf">Implemented</span><h3>Documents &amp; OCR</h3><p>Upload, store, extract and review prescriptions, labs and imaging. Low-confidence extractions are flagged for human review. <span class="muted small">The extractor is a deterministic demo provider.</span></p></article>
+      <article class="story-card"><span class="chip leaf">Implemented</span><h3>Structured clinical context</h3><p>Every datum is labelled — patient-reported, document-extracted, AI-organized or doctor-verified. Missing stays “not provided”.</p></article>
+      <article class="story-card"><span class="chip leaf">Implemented</span><h3>Doctor verification</h3><p>Versioned summaries move AI_DRAFT → PATIENT_CONFIRMED → DOCTOR_VERIFIED, with doctor identity, timestamp and visit persisted on verification.</p></article>
+      <article class="story-card"><span class="chip leaf">Implemented</span><h3>Emergency workflow</h3><p>Fixed red-flag rules and patient-triggered alerts with acknowledge/resolve states, real-time delivery and audit entries.</p></article>
+      <article class="story-card"><span class="chip leaf">Implemented</span><h3>Audit trail</h3><p>Logins, visit creation, uploads, summary generation, confirmations, doctor access, verification and emergency state changes are all recorded.</p></article>
+      <article class="story-card"><span class="chip gold">Mock readiness</span><h3>FHIR / ABDM adapters</h3><p>Resource-shaped output and a clean adapter boundary so a FHIR server or ABHA linkage can be connected without touching the clinical workflow.</p></article>
+    </div>
+  </section>
+  <footer class="pub-foot">If it isn’t listed here, it isn’t in this build. See the <a href="/roadmap" style="color:#e6d7ad">Roadmap</a> for what is planned.</footer>
+  <script src="/js/i18n.js?v=133"></script>
+  <script>PreclinicI18n.bindSwitch(); PreclinicI18n.apply();</script>
+</body>
+</html>

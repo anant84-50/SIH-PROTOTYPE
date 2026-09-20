@@ -3,24 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>How to use · Preclinic IQ AI</title>
+  <title>How it works · Preclinic IQ AI</title>
   <link rel="stylesheet" href="/css/base.css" />
   <link rel="stylesheet" href="/css/layout.css" />
   <link rel="stylesheet" href="/css/components.css" />
-  <link rel="stylesheet" href="/css/site.css?v=4" />
+  <link rel="stylesheet" href="/css/site.css?v=6" />
 </head>
 <body class="landing">
   <nav class="pub-nav">
     <div class="brand">
       <img src="/assets/emblem.png" alt="" />
-      <div><h1>Preclinic IQ AI</h1><small>How to use it</small></div>
+      <div><h1>Preclinic IQ AI</h1><small>How it works</small></div>
     </div>
     <div class="pub-links">
       <a href="/">Home</a>
-      <a href="/about">What</a>
-      <a class="on" href="/how-it-works">How to use</a>
-      <a href="/why">Why it exists</a>
-      <div class="lang-switch dark">
+      <a href="/why">How it helps</a>
+      <a href="/how-it-works" class="on">Patient Journey</a>
+      <a href="/capabilities">Capabilities</a>
+      <a href="/privacy">Safety &amp; Privacy</a>
+      <a href="/roadmap">Roadmap</a><div class="lang-switch dark">
         <button type="button" data-lang="en">EN</button>
         <button type="button" data-lang="hi">हिं</button>
         <button type="button" data-lang="ta">த</button>
@@ -30,44 +31,43 @@
     </div>
   </nav>
   <section class="story">
-    <div class="eyebrow">Usage guide</div>
-    <h1>From first word to a verified chart — without changing clinical judgement.</h1>
-    <div class="story-grid">
+    <div class="eyebrow">The journey of one visit</div>
+    <h1>Nine steps, from a first word to a verified case.</h1>
+    <div class="story-grid" style="grid-template-columns:1fr">
+      <div class="manuscript" style="margin-top:8px">
+        <div class="steps">
+          <div><span class="num">1</span><div><strong>Identity &amp; consent</strong><div class="small muted">The patient signs in with their own Patient ID and gives purpose-limited consent for AI-assisted intake before any question is asked. The consent is stored per visit.</div></div></div>
+          <div><span class="num">2</span><div><strong>Adaptive interview</strong><div class="small muted">Six complaint pathways (fever, headache, and five more) drive an adaptive question bank — symptom details, duration, red flags. A pathway is a conversation, never a diagnosis menu.</div></div></div>
+          <div><span class="num">3</span><div><strong>Voice or text</strong><div class="small muted">Every question can be answered by voice (browser speech recognition), typed, or tapped from options. The interview and buttons follow the chosen language — English, Hindi, Tamil or Bengali.</div></div></div>
+          <div><span class="num">4</span><div><strong>Health history &amp; AYUSH</strong><div class="small muted">Past conditions, surgeries, family history, current medications and allergies. AYUSH context — prakriti, vikriti, ahara, vihara, nidana — is optional, and “not sure” is a first-class answer.</div></div></div>
+          <div><span class="num">5</span><div><strong>Documents &amp; OCR</strong><div class="small muted">Prescriptions, lab reports and imaging are uploaded (PDF/JPG/PNG). A backend extractor pulls structured entities with confidence; low-confidence items are flagged for human review, not silently accepted.</div></div></div>
+          <div><span class="num">6</span><div><strong>AI structuring</strong><div class="small muted">The AI provider assembles a versioned structured context: presenting concern, symptoms &amp; timeline, medical/surgical/family history, medications, allergies, AYUSH, document-derived data — each item labelled patient-reported, document-extracted or AI-organized.</div></div></div>
+          <div><span class="num">7</span><div><strong>Patient confirmation</strong><div class="small muted">The patient reads the draft, can correct any information (the system navigates back to the relevant question) and confirms it. Confirmation — who, when, for which visit — is stored in the database.</div></div></div>
+          <div><span class="num">8</span><div><strong>Doctor review</strong><div class="small muted">The doctor opens the case: overview, AI summary, history comparison, documents, raw intake and timeline. They may edit supported structured fields, saving a new review version.</div></div></div>
+          <div><span class="num">9</span><div><strong>Doctor verification</strong><div class="small muted">Verification (or rejection) is a real state change: doctor identity, timestamp, visit and status are persisted, a timeline event is recorded, and the patient’s dashboard updates only once the backend confirms it.</div></div></div>
+        </div>
+        <hr class="rule" />
+        <p class="disclaimer">AI prepares structured context. It does not diagnose or prescribe. A registered practitioner must verify.</p>
+      </div>
+    </div>
+    <div class="story-grid" style="margin-top:22px">
       <article class="story-card">
-        <h3>1. Patient</h3>
-        <ol>
-          <li>Sign in with Patient ID (example PCI-2026-000001).</li>
-          <li>Pick a language — English, Hindi, Tamil or Bengali. The interview follows it.</li>
-          <li>Give consent, choose a complaint pathway (not a diagnosis).</li>
-          <li>Answer by voice, text or touch. Upload prescriptions or labs.</li>
-          <li>Confirm the AI draft. History is saved to your record.</li>
-          <li>Use the red Emergency control if you need the doctor and admin immediately.</li>
-        </ol>
+        <h3>Patients</h3>
+        <p>Your dashboard shows the visit pipeline step by step — each step completes only when the backend confirms it. Your history, documents, notifications and an emergency assistance flow are all real, persisted records.</p>
       </article>
       <article class="story-card">
-        <h3>2. Doctor</h3>
-        <ol>
-          <li>Sign in as DOC-001.</li>
-          <li>Open the intake queue or any saved patient record.</li>
-          <li>Read history, AYUSH, timeline and uploaded files (Open file).</li>
-          <li>Resolve conflicts. Verify or reject the summary — a new version is kept.</li>
-          <li>Acknowledge emergency alerts and act. The system does not prescribe.</li>
-        </ol>
+        <h3>Doctors</h3>
+        <p>The clinical desk has a searchable queue with filters, a full patient workspace, working document viewers, and verification that writes to the database. Nothing is verified until the doctor says so.</p>
       </article>
       <article class="story-card">
-        <h3>3. Admin (NexusCare)</h3>
-        <ol>
-          <li>Sign in with Admin ID <strong>NexusCare</strong> and password <strong>2525</strong>.</li>
-          <li>See every patient, visit count, uploaded documents and the audit trail.</li>
-          <li>Open a patient to read the same saved history the doctor sees.</li>
-          <li>Watch the emergency inbox and system health.</li>
-        </ol>
+        <h3>Administration</h3>
+        <p>The existing admin console is unchanged: patients, visits, documents, emergency inbox and the audit trail of every clinical action.</p>
       </article>
     </div>
     <p class="disclaimer" style="margin-top:22px">This is not an ambulance service. If someone is collapsing, call local emergency numbers as well as alerting the desk.</p>
   </section>
   <footer class="pub-foot">Working process of intake → summary → doctor verify is unchanged.</footer>
-  <script src="/js/i18n.js"></script>
+  <script src="/js/i18n.js?v=133"></script>
   <script>PreclinicI18n.bindSwitch(); PreclinicI18n.apply();</script>
 </body>
 </html>

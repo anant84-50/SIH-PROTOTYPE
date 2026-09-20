@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/css/base.css" />
   <link rel="stylesheet" href="/css/layout.css" />
   <link rel="stylesheet" href="/css/components.css" />
-  <link rel="stylesheet" href="/css/site.css?v=4" />
+  <link rel="stylesheet" href="/css/site.css?v=6" />
 </head>
 <body class="landing">
   <nav class="pub-nav">
@@ -17,10 +17,11 @@
     </div>
     <div class="pub-links">
       <a href="/">Home</a>
-      <a href="/about">What</a>
-      <a href="/how-it-works">How to use</a>
-      <a class="on" href="/why">Why it exists</a>
-      <div class="lang-switch dark">
+      <a href="/why" class="on">How it helps</a>
+      <a href="/how-it-works">Patient Journey</a>
+      <a href="/capabilities">Capabilities</a>
+      <a href="/privacy">Safety &amp; Privacy</a>
+      <a href="/roadmap">Roadmap</a><div class="lang-switch dark">
         <button type="button" data-lang="en">EN</button>
         <button type="button" data-lang="hi">हिं</button>
         <button type="button" data-lang="ta">த</button>
@@ -39,17 +40,31 @@
         <p>Unstructured intake. Mixed languages. Handwritten prescriptions. No single timeline. No first-class prakriti / nidana capture. No deterministic safety net.</p>
       </article>
       <article class="story-card">
-        <h3>The decision we made</h3>
-        <p>AI may draft. Patients confirm. Doctors verify. Nothing silent overwrites a conflict. Emergency rules are code, not a chatbot. Files live in secure storage with a database pointer — not inside PostgreSQL blobs.</p>
+        <h3>The approach: pre-clinical case-taking</h3>
+        <p>The patient tells their story in their own language — voice, text or documents. The AI structures it into a clinical context with provenance. The doctor reviews and verifies. The AI never sits in the diagnosis chair.</p>
+      </article>
+      <article class="story-card">
+        <h3>The flow</h3>
+        <p><strong>Patient</strong> → <strong>AI</strong> (structures, never invents) → <strong>structured context</strong> (versioned, source-labelled) → <strong>Doctor</strong> (reviews, corrects, verifies). Every transition is a database state change, not a screen animation.</p>
+      </article>
+    </div>
+    <div class="story-grid" style="margin-top:16px">
+      <article class="story-card">
+        <h3>What we refuse to fake</h3>
+        <p>Missing information stays “not provided” — it never becomes “no history”. Skipped fields are stored as unknown, not guessed. Two visits are “related” only on structured data (pathway, medications, allergies) — never plain-text similarity. No button exists that doesn’t do something real.</p>
       </article>
       <article class="story-card">
         <h3>Who it is for</h3>
         <p>OPD patients who speak different Indian languages, Kayachikitsa and Panchakarma clinicians, and institute administrators who must see every saved history and every urgent alert.</p>
       </article>
+      <article class="story-card">
+        <h3>Where this build sits</h3>
+        <p>A complete working prototype: real roles, records, workflows, audit and safety rules. The AI, OCR and speech services run on deterministic demo providers behind standard interfaces — the point is the clinical workflow, not model quality. See the <a href="/roadmap">Roadmap</a> for what comes next.</p>
+      </article>
     </div>
   </section>
-  <footer class="pub-foot">Built as one stack: HTML/CSS/JS → FastAPI → PostgreSQL. Frontend never holds API keys.</footer>
-  <script src="/js/i18n.js"></script>
+  <footer class="pub-foot">Modern web frontend, API service and structured database — designed for FHIR / ABDM interconnection, deterministic safety rules, and full audit of every state change.</footer>
+  <script src="/js/i18n.js?v=133"></script>
   <script>PreclinicI18n.bindSwitch(); PreclinicI18n.apply();</script>
 </body>
 </html>

@@ -3,3 +3,14 @@
 .health-ok { color: var(--ok); font-weight: 700; }
 .health-bad { color: var(--alert); font-weight: 700; }
 .log-action { font-family: var(--mono); font-size: 12px; overflow-wrap: anywhere; }
+
+/* Admin v2 */
+.adm-kpis .kpi { text-align: left; }
+.kpi .n.em { color: var(--alert); }
+.em-card {
+  border: 1px solid #f0c2c2; background: #fdf6f2; border-left: 3px solid var(--alert);
+  border-radius: 12px; padding: 12px 14px; margin-top: 10px;
+}
+.em-card .e-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.em-card .e-reason { margin: 8px 0 4px; font-size: 13.5px; }
+.em-card .e-meta { font-size: 11.5px; color: var(--ink-soft); display: flex; flex-wrap: wrap; gap: 4px 14px; }

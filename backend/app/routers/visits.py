@@ -5,12 +5,14 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.dependencies import get_current_user, resolve_patient_scope
-from app.models.tables import AiSource, AyushHistory, Conflict, Consent, User, Visit
+from app.models.tables import AiSource, AyushHistory, Conflict, Consent, Conversation, Document, EmergencyAlert, Patient, User, Visit
 from app.schemas.common import VisitCreateIn, VisitPatchIn
 from app.services.audit import audit
-from app.services.clinical import latest_ayush, latest_history, latest_summary
+from app.services.clinical import latest_ayush, latest_history, latest_summary, related_visits
+from app.services.interview import intake_view
 from app.utils.envelope import ApiError, ok
-from app.utils.serialize import ayush_out, history_out, summary_out, visit_out
+from app.utils.ids import iso
+from app.utils.serialize import ayush_out, conflict_out, document_out, history_out, summary_out, visit_out
 
 router = APIRouter(tags=["visits"])
 
@@ -60,12 +62,47 @@ def get_visit(visit_id: str, db: Session = Depends(get_db), user: User = Depends
     hist = latest_history(db, visit.id)
     ayush = latest_ayush(db, visit.id)
     summary = latest_summary(db, visit.id)
+    # Interview (intake) view with per-question status — real answers only.
+    conv = db.query(Conversation).filter(Conversation.visit_id == visit.id).first()
+    intake = None
+    if conv:
+        intake = intake_view(conv)
+    # Structured matching only (same pathway / shared meds / shared allergies).
+    related = related_visits(db, visit) if user.role in ("DOCTOR", "ADMIN") else None
+    em_alerts = (
+        db.query(EmergencyAlert)
+        .filter(EmergencyAlert.visit_id == visit.id, EmergencyAlert.status.in_(["ACTIVE", "ACKNOWLEDGED"]))
+        .all()
+    )
+    visit_docs = (
+        db.query(Document).filter(Document.visit_id == visit.id).order_by(Document.created_at.desc()).all()
+    )
+    patient = db.get(Patient, visit.patient_uuid)
     return ok(
         {
             **visit_out(visit),
             "history": history_out(hist) if hist else None,
             "ayush": ayush_out(ayush) if ayush else None,
             "summary": summary_out(summary) if summary else None,
+            "intake": intake,
+            "relatedVisits": related,
+            "visitEmergencies": [
+                {
+                    "id": a.id,
+                    "priority": a.priority,
+                    "status": a.status,
+                    "reason": a.reason,
+                    "ruleId": a.rule_id,
+                    "createdAt": iso(a.created_at),
+                }
+                for a in em_alerts
+            ],
+            "visitDocuments": [document_out(d) for d in visit_docs],
+            "openConflicts": [
+                conflict_out(c)
+                for c in db.query(Conflict).filter(Conflict.patient_uuid == visit.patient_uuid, Conflict.status == "OPEN").all()
+            ],
+            "patientId": patient.patient_id if patient else None,
         }
     )
 

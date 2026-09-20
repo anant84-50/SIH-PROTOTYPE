@@ -165,6 +165,31 @@ def summary_out(s: AiSummary, sources: list | None = None) -> dict:
     }
 
 
+def medication_out(m) -> dict:
+    return {
+        "id": m.id,
+        "name": m.name,
+        "dosage": m.dosage,
+        "frequency": m.frequency,
+        "duration": m.duration,
+        "sourceType": m.source_type,
+        "confidence": m.confidence,
+        "verificationStatus": m.verification_status,
+        "isCurrent": m.is_current,
+    }
+
+
+def allergy_out(a) -> dict:
+    return {
+        "id": a.id,
+        "substance": a.substance,
+        "reaction": a.reaction,
+        "sourceType": a.source_type,
+        "confidence": a.confidence,
+        "verificationStatus": a.verification_status,
+    }
+
+
 def conflict_out(c: Conflict) -> dict:
     return {
         "id": c.id,

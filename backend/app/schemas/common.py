@@ -72,6 +72,10 @@ class VisitPatchIn(BaseModel):
 
 class AiSessionIn(BaseModel):
     visitId: str
+    # For returning patients: the previous visit whose verified information
+    # should be carried forward, so the interview only asks what may have
+    # changed. When set, the session uses the returning-visit question bank.
+    reuseFrom: str | None = None
 
 
 class AiMessageIn(BaseModel):
@@ -122,3 +126,11 @@ class UserCreateIn(BaseModel):
 class SummaryPatchIn(BaseModel):
     narrative: str | None = None
     body: dict[str, Any] | None = None
+
+
+class ProfilePatchIn(BaseModel):
+    displayName: str | None = None
+    email: str | None = None
+    phone: str | None = None
+    department: str | None = None
+    qualification: str | None = None

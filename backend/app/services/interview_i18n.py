@@ -2,7 +2,7 @@
 
 from copy import deepcopy
 
-from app.services.ontology import COMMON_HISTORY, PATHWAYS, pathway_def
+from app.services.ontology import COMMON_HISTORY, PATHWAYS, RETURNING_BANK, bank_def, pathway_def
 
 # Hindi / Tamil / Bengali overlays keyed by pathway then question id.
 HI = {
@@ -262,7 +262,7 @@ BN = {
 
 COMMON = {
     "hi": {
-        "pmh_core": "कोई लंबी बीमारी — मधुमेह, बीपी, दमा, टीबी, हृदय, थायरॉइड?",
+        "pmh_core": "क्या कोई लंबी बीमारी — मधुमेह, बीपी, दमा, टीबी, हृदय, थायरॉइड?",
         "allergies_core": "दवा या भोजन से ज्ञात एलर्जी? नहीं तो 'none' लिखें।",
         "meds_core": "वर्तमान दवाएँ (नाम और मात्रा) या 'none'।",
     },
@@ -278,17 +278,65 @@ COMMON = {
     },
 }
 
+# Returning-visit overlays: only the changing questions, never the old facts.
+HI_RET = {
+    "opening": "आपकी पिछली जानकारी हमारे पास है, इसलिए हम सब दोहराएँगे नहीं। हम केवल यह पूछेंगे कि पिछली विज़िट के बाद क्या बदला है। पिछले उत्तर अपने-आप वर्तमान नहीं माने जाते।",
+    "q": {
+        "changed_since": ("पिछली विज़िट के बाद क्या बदला है?", None),
+        "current_symptoms": ("अभी आपकी मुख्य समस्या या लक्षण क्या है?", None),
+        "current_duration": ("वर्तमान समस्या कब से है?", ["अभी शुरू", "1–3 दिन", "4–14 दिन", "2 सप्ताह से अधिक", "पिछली विज़िट से जारी"]),
+        "current_severity": ("पिछली बार की तुलना में अब कैसा है?", ["बेहतर", "उतना ही", "बुरा", "दैनिक काम नहीं कर पा रहे"]),
+        "current_meds": ("अभी कौन सी दवाएँ ले रहे हैं? (नई या बंद हुई दवा लिखें, या 'बदलाव नहीं')", None),
+        "new_allergies": ("तब से कोई नई एलर्जी? नहीं तो 'none' लिखें।", None),
+        "new_history": ("पिछली विज़िट के बाद कोई नई बीमारी, समस्या या ऑपरेशन?", None),
+        "warning_now": ("कोई नई चेतावनी — तीव्र दर्द, साँस की तकलीफ, रक्तस्राव, बेहोशी, एक तरफ़ कमज़ोरी?", ["कोई नहीं", "तीव्र दर्द", "साँस की तकलीफ", "रक्तस्राव", "बेहोशी", "एक तरफ़ कमज़ोरी"]),
+        "concerns_now": ("इस बार चिकित्सक किस बात पर ध्यान दें?", None),
+    },
+}
+TA_RET = {
+    "opening": "உங்கள் முந்தைய தகவல் நம்மிடம் உள்ளது, எனவே அனைத்தும் மீண்டும் கேட்க மாட்டோம். முந்தைய வருகையின் பின் என்ன மாறியது என்பதை மட்டுமே கேட்கிறோம். முந்தைய பதில்கள் தானாகவே தற்போதையதாக்கப்படுவதில்லை.",
+    "q": {
+        "changed_since": ("முந்தைய வருகையின் பின் என்ன மாறியது?", None),
+        "current_symptoms": ("இப்போது உங்கள் முகப்பு பிரச்சினை அல்லது அறிகுறி என்ன?", None),
+        "current_duration": ("தற்போதைய பிரச்சினை எப்போது தொடங்கியது?", ["இப்போதே தொடங்கியது", "1–3 நாள்", "4–14 நாள்", "2 வாரங்களுக்கு மேல்", "முந்தைய வருகையிலிருந்து தொடரும்"]),
+        "current_severity": ("முன் இருந்ததை விட இப்போது எப்படி?", ["நன்றாக", "அதே நிலை", "மோசமாக", "அன்றாட வேலை முடியவில்லை"]),
+        "current_meds": ("இப்போது எந்த மருந்துகளை எடுக்கிறீர்கள்? (புதியது அல்லது நிறுத்தியது, அல்லது 'மாற்றம் இல்லை')", None),
+        "new_allergies": ("அப்போது முதல் புதிய ஒவ்வாமை? இல்லையெனில் none.", None),
+        "new_history": ("முந்தைய வருகையின் பின் புதிய நோய், பிரச்சினை அல்லது அறுவை?", None),
+        "warning_now": ("புதிய எச்சரிக்கை — கடுமையான வலி, மூச்சு, ரத்தம், மயக்கம், ஒரு பக்க பலவீனம்?", ["இல்லை", "கடுமையான வலி", "மூச்சு திணறல்", "ரத்தம்", "மயக்கம்", "ஒரு பக்க பலவீனம்"]),
+        "concerns_now": ("இந்த முறை மருத்துவர் எதில் மனம் செலுத்த வேண்டும்?", None),
+    },
+}
+BN_RET = {
+    "opening": "আপনার আগের তথ্য আমাদের কাছে আছে, তাই সবকিছু আবার পড়ব না। শুধু জানাবো গত ভিজিটের পর কী পরিবর্তন হয়েছে। আগের উত্তর স্বয়ংক্রিয়ভাবে বর্তমান হিসেবে ধরা হয় না।",
+    "q": {
+        "changed_since": ("গত ভিজিটের পর কী পরিবর্তন হয়েছে?", None),
+        "current_symptoms": ("এখন আপনার মূল সমস্যা বা লক্ষণ কী?", None),
+        "current_duration": ("বর্তমান সমস্যা কবে থেকে?", ["সম্প্রতি শুরু", "১–৩ দিন", "৪–১৪ দিন", "২ সপ্তাহের বেশি", "গত ভিজিট থেকে চলমান"]),
+        "current_severity": ("আগের তুলনায় এখন কেমন?", ["বেটার", "একই", "খারাপ", "দৈনন্দিন কাজ করা যাচ্ছে না"]),
+        "current_meds": ("এখন কোন ওষুধ খাচ্ছেন? (নতুন বা বন্ধ ওষুধ লিখুন, বা 'পরিবর্তন নেই')", None),
+        "new_allergies": ("তখন থেকে নতুন অ্যালার্জি? না থাকলে none লিখুন।", None),
+        "new_history": ("গত ভিজিটের পর নতুন রোগ, সমস্যা বা অপারেশন?", None),
+        "warning_now": ("নতুন সতর্ক লক্ষণ — তীব্র ব্যথা, শ্বাসকষ্ট, রক্তপাত, অজ্ঞান, এক পাশ দুর্বলতা?", ["নেই", "তীব্র ব্যথা", "শ্বাসকষ্ট", "রক্তপাত", "অজ্ঞান", "এক পাশে দুর্বলতা"]),
+        "concerns_now": ("এবার চিকিৎসক কোন বিষয়ে মন দেবেন?", None),
+    },
+}
+
 PACKS = {"hi": HI, "ta": TA, "bn": BN}
+RET_PACKS = {"hi": HI_RET, "ta": TA_RET, "bn": BN_RET}
 
 
 def localize_bank(pathway: str, lang: str) -> tuple[str, list[dict]]:
-    base = pathway_def(pathway)
-    questions = deepcopy(base["questions"]) + deepcopy(COMMON_HISTORY)
+    base = bank_def(pathway)
+    questions = deepcopy(base["questions"])
     opening = base["opening"]
-    pack = PACKS.get((lang or "en")[:2])
+    is_returning = pathway == "RETURNING"
+    if not is_returning:
+        questions = questions + deepcopy(COMMON_HISTORY)
+    pack = (RET_PACKS if is_returning else PACKS).get((lang or "en")[:2])
     if not pack:
         return opening, questions
-    block = pack.get(pathway) or pack.get("OTHER")
+    block = pack if is_returning else (pack.get(pathway) or pack.get("OTHER"))
     if block:
         opening = block.get("opening", opening)
         qmap = block.get("q") or {}
@@ -300,8 +348,9 @@ def localize_bank(pathway: str, lang: str) -> tuple[str, list[dict]]:
             q["text"] = text
             if options is not None:
                 q["options"] = options
-    common = COMMON.get((lang or "en")[:2]) or {}
-    for q in questions:
-        if q["id"] in common:
-            q["text"] = common[q["id"]]
+    if not is_returning:
+        common = COMMON.get((lang or "en")[:2]) or {}
+        for q in questions:
+            if q["id"] in common:
+                q["text"] = common[q["id"]]
     return opening, questions

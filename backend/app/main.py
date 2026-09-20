@@ -90,6 +90,9 @@ def create_app() -> FastAPI:
         "/about": FRONTEND / "about.html",
         "/how-it-works": FRONTEND / "how-it-works.html",
         "/why": FRONTEND / "why.html",
+        "/capabilities": FRONTEND / "capabilities.html",
+        "/privacy": FRONTEND / "privacy.html",
+        "/roadmap": FRONTEND / "roadmap.html",
     }
 
     def _page(path: Path):
@@ -128,6 +131,18 @@ def create_app() -> FastAPI:
     @app.get("/why")
     def why_page():
         return _page(pages["/why"])
+
+    @app.get("/capabilities")
+    def capabilities_page():
+        return _page(pages["/capabilities"])
+
+    @app.get("/privacy")
+    def privacy_page():
+        return _page(pages["/privacy"])
+
+    @app.get("/roadmap")
+    def roadmap_page():
+        return _page(pages["/roadmap"])
 
     @app.get("/login.html")
     def login_html():

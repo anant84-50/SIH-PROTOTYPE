@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin · Preclinic IQ AI</title>
-  <link rel="stylesheet" href="/css/base.css" />
-  <link rel="stylesheet" href="/css/layout.css" />
-  <link rel="stylesheet" href="/css/components.css" />
-  <link rel="stylesheet" href="/css/admin.css" />
+  <link rel="stylesheet" href="/css/base.css?v=12" />
+  <link rel="stylesheet" href="/css/layout.css?v=12" />
+  <link rel="stylesheet" href="/css/components.css?v=6" />
+  <link rel="stylesheet" href="/css/admin.css?v=2" />
 </head>
 <body>
   <div class="shell">
@@ -22,9 +22,13 @@
         <button type="button" data-lang="ta">த</button>
         <button type="button" data-lang="bn">বাং</button>
       </div>
-      <nav class="nav">
-        <a href="/admin" class="active" data-i18n="adminTitle">Control room</a>
-        <a href="#" id="logoutBtn" data-i18n="navOut">Sign out</a>
+      <nav class="nav" id="admNav">
+        <a href="#dashboard" class="active" data-adm="dashboard"><span class="ic-slot"></span><span>Dashboard</span></a>
+        <a href="#patients" data-adm="patients"><span class="ic-slot"></span><span>Patient Management</span></a>
+        <a href="#doctors" data-adm="doctors"><span class="ic-slot"></span><span>Doctor Management</span></a>
+        <a href="#visits-docs" data-adm="visits-docs"><span class="ic-slot"></span><span>Visits &amp; Documents</span></a>
+        <a href="#emergency-audit" data-adm="emergency-audit"><span class="ic-slot"></span><span>Emergency &amp; Audit</span></a>
+        <a href="#" id="logoutBtn" class="logout-item"><span class="ic-slot"></span><span data-i18n="navOut">Sign out</span></a>
       </nav>
       <div class="side-foot" data-i18n="sideFootA">SIH 26047 · Ministry of Ayush · AIIA</div>
     </aside>
@@ -37,63 +41,17 @@
         <div class="who"><strong id="whoName">—</strong><span class="small muted" id="whoMeta"></span></div>
       </div>
       <div id="emergencyBanner" class="banner-em hidden"></div>
-      <div class="grid-3">
-        <div class="card kpi"><div class="eyebrow" data-i18n="patients">Patients</div><div class="n" id="kPatients">0</div></div>
-        <div class="card kpi"><div class="eyebrow" data-i18n="visits">Visits</div><div class="n" id="kVisits">0</div></div>
-        <div class="card kpi"><div class="eyebrow" data-i18n="users">Users</div><div class="n" id="kUsers">0</div></div>
-        <div class="card kpi"><div class="eyebrow" data-i18n="awaiting">Awaiting doctor</div><div class="n" id="kWait">0</div></div>
-        <div class="card kpi"><div class="eyebrow" data-i18n="openEm">Open emergencies</div><div class="n" id="kEm">0</div></div>
-        <div class="card kpi"><div class="eyebrow" data-i18n="health">Health</div><div id="healthBox" class="small"></div></div>
-      </div>
-
-      <div class="grid-2" style="margin-top:16px">
-        <div class="card">
-          <div class="eyebrow">Patient records</div>
-          <p class="small muted">Every saved visit, document and timeline. Click a row to open history and files.</p>
-          <div class="table-wrap">
-            <table id="ptTable"><thead><tr><th>Patient ID</th><th>Name</th><th>Visits</th><th>Files</th><th>Last</th></tr></thead><tbody></tbody></table>
-          </div>
-          <div id="ptDetail" style="margin-top:12px"></div>
-        </div>
-        <div class="card">
-          <div class="eyebrow" data-i18n="emInbox">Emergency inbox</div>
-          <div id="emList"></div>
-        </div>
-      </div>
-      <div class="grid-2" style="margin-top:16px">
-        <div class="card">
-          <div class="eyebrow" data-i18n="directory">Directory</div>
-          <div class="table-wrap">
-            <table id="userTable"><thead><tr><th>Login</th><th data-i18n="fullName">Name</th><th data-i18n="role">Role</th><th>Status</th><th>Created</th></tr></thead><tbody></tbody></table>
-          </div>
-          <hr class="rule" />
-          <h4 data-i18n="provision">Provision user</h4>
-          <div class="grid-2">
-            <div class="field"><label data-i18n="loginId">Login ID</label><input id="nuId" placeholder="DOC-003" /></div>
-            <div class="field"><label data-i18n="displayName">Display name</label><input id="nuName" /></div>
-            <div class="field"><label data-i18n="role">Role</label>
-              <select id="nuRole"><option>DOCTOR</option><option>ADMIN</option><option>PATIENT</option></select>
-            </div>
-            <div class="field"><label data-i18n="password">Password</label><input id="nuPw" type="password" /></div>
-          </div>
-          <div class="btn-row"><button class="btn" id="createUser" data-i18n="create">Create</button></div>
-        </div>
-        <div class="card">
-          <div class="eyebrow" data-i18n="audit">Audit log</div>
-          <div class="table-wrap">
-            <table id="logTable"><thead><tr><th>When</th><th>Action</th><th>Type</th><th>Resource</th><th>IP</th></tr></thead><tbody></tbody></table>
-          </div>
-        </div>
-      </div>
+      <main id="admMain" aria-live="polite"></main>
     </main>
   </div>
-  <script src="/js/boot.js?v=8"></script>
-  <script src="/js/api.js?v=8"></script>
-  <script src="/js/auth.js"></script>
-  <script src="/js/common.js"></script>
-  <script src="/js/i18n.js"></script>
-  <script src="/js/emergency.js"></script>
-  <script src="/js/documents.js"></script>
-  <script src="/js/admin.js"></script>
+  <script src="/js/boot.js?v=11"></script>
+  <script src="/js/api.js?v=12"></script>
+  <script src="/js/auth.js?v=11"></script>
+  <script src="/js/common.js?v=11"></script>
+  <script src="/js/i18n.js?v=13"></script>
+  <script src="/js/emergency.js?v=11"></script>
+  <script src="/js/documents.js?v=11"></script>
+  <script src="/js/docViewer.js?v=11"></script>
+  <script src="/js/admin.js?v=2"></script>
 </body>
 </html>

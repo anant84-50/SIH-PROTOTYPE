@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scope &amp; Future Vision · Preclinic IQ AI</title>
+  <link rel="stylesheet" href="/css/base.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/site.css?v=6" />
+</head>
+<body class="landing">
+  <nav class="pub-nav">
+    <div class="brand">
+      <img src="/assets/emblem.png" alt="" />
+      <div><h1>Preclinic IQ AI</h1><small>Scope &amp; Future Vision</small></div>
+    </div>
+    <div class="pub-links">
+      <a href="/">Home</a>
+      <a href="/why">How it helps</a>
+      <a href="/how-it-works">Patient Journey</a>
+      <a href="/capabilities">Capabilities</a>
+      <a href="/privacy">Safety &amp; Privacy</a>
+      <a href="/roadmap" class="on">Roadmap</a><div class="lang-switch dark">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="hi">हिं</button>
+        <button type="button" data-lang="ta">த</button>
+        <button type="button" data-lang="bn">বাং</button>
+      </div>
+      <a class="btn nav-signin" href="/login" style="background:#f4efe4;color:#12211c;border:1px solid #c4a35a;font-weight:700">Sign in</a>
+    </div>
+  </nav>
+  <section class="story">
+    <div class="eyebrow">Scope &amp; Future Vision</div>
+    <h1>What this prototype is, and what it is deliberately not yet.</h1>
+    <p class="muted" style="max-width:64ch">We keep the boundary between “works today” and “planned” explicit. Everything labelled implemented is live and tested end-to-end; everything below is a direction, not a promise, and none of it is present in the current build.</p>
+    <div class="story-grid">
+      <article class="story-card" style="border-left:3px solid var(--ok)">
+        <span class="chip ok">In scope · this build</span>
+        <h3>The clinical workflow, end to end</h3>
+        <p>Roles (patient / doctor / admin), consent, adaptive intake, returning-visit intelligence, documents &amp; OCR, structured context, doctor verification, emergency safety net, and a complete audit trail — all on real, persisted records.</p>
+      </article>
+      <article class="story-card" style="border-left:3px solid var(--gold)">
+        <span class="chip gold">Next · production hardening</span>
+        <h3>From prototype to deployable</h3>
+        <ul>
+          <li>Production PostgreSQL with migrations; structured concurrency for document jobs.</li>
+          <li>Pluggable real AI/OCR providers behind the existing interfaces (OpenAI or institute stack).</li>
+          <li>Redis-backed background queue for OCR and summarization at scale.</li>
+          <li>Observability: structured logs, request tracing, and provider cost tracking.</li>
+        </ul>
+      </article>
+      <article class="story-card" style="border-left:3px solid var(--terracotta)">
+        <span class="chip">Later · ecosystem</span>
+        <h3>Interoperability &amp; reach</h3>
+        <ul>
+          <li>FHIR R4 server export and ABHA / ABDM health-id linkage.</li>
+          <li>SMS / WhatsApp alerts for verification and emergency follow-through.</li>
+          <li>Multi-hospital, multi-tenant administration and referral workflows.</li>
+          <li>Longitudinal analytics on de-identified, consented data.</li>
+        </ul>
+      </article>
+    </div>
+    <div class="manuscript" style="margin-top:22px">
+      <div class="eyebrow">A note on AI in this prototype</div>
+      <p style="max-width:70ch">The language model, OCR and speech services run on <strong>deterministic demo providers</strong>. They exist to exercise the full clinical workflow — permissions, provenance, verification, emergency rules, audit — without depending on an external vendor. The value of this build is the <em>system</em> around the model, and every model-facing boundary is an interface a production provider would slot into.</p>
+    </div>
+  </section>
+  <footer class="pub-foot">Roadmap items are directions, not commitments. Nothing unlisted exists in this build.</footer>
+  <script src="/js/i18n.js?v=133"></script>
+  <script>PreclinicI18n.bindSwitch(); PreclinicI18n.apply();</script>
+</body>
+</html>
