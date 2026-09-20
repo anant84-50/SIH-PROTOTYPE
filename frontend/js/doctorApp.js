@@ -421,12 +421,12 @@
   function startDoctorTour() {
     const tt = t;
     window.PreclinicTutorial.start("DOCTOR", [
-      { id: "dash", title: tt("tutD1t"), body: tt("tutD1b"), center: true },
+      { id: "dash", title: tt("tutD1t"), body: tt("tutD1b"), goFirst: "/", target: ".dash-grid" },
       { id: "queue", title: tt("tutD2t"), body: tt("tutD2b"), goFirst: "queue", target: "#qBody .tbl2" },
       { id: "open", title: tt("tutD3t"), body: tt("tutD3b"), target: "#qBody [data-open]" },
-      { id: "review", title: tt("tutD4t"), body: tt("tutD4b"), center: true },
+      { id: "summary", title: tt("tutD4t"), body: tt("tutD4b"), goFirst: "summaries", target: ".tbl2" },
       { id: "docs", title: tt("tutD5t"), body: tt("tutD5b"), goFirst: "documents", target: ".doc-card2" },
-      { id: "verify", title: tt("tutD6t"), body: tt("tutD6b"), center: true },
+      { id: "verify", title: tt("tutD6t"), body: tt("tutD6b"), target: ".visit-card" },
     ]);
   }
 

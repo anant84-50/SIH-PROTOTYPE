@@ -1,7 +1,9 @@
-/* Preclinic IQ AI — shared document viewer (patient + doctor).
- * Serves the REAL file from the backend via GET /documents/{id}/view
- * (inline, token-authenticated). No fake modal: missing/corrupted/
- * unauthorized files show real error states. No filesystem paths leak. */
+/* Preclinic IQ AI — shared document viewer (patient + doctor) — v4 fixed.
+ * Fixes Chrome blocked iframe by using Blob/ObjectURL fetched via API with Authorization.
+ * PDF: fetch authorized → Blob → ObjectURL → iframe/embed. JPG/PNG: fetch bytes → img.
+ * Toolbar [Zoom Out][Zoom Level][Zoom In][Fit][Fullscreen][Close] never overlaps.
+ * Fullscreen via Fullscreen API with fallback large modal. Responsive, no path leak.
+ */
 (function (global) {
   "use strict";
   const UI = global.PreclinicUI;
@@ -14,43 +16,46 @@
   let zoom = 1;
   let currentDoc = null;
   let entityCache = null;
+  let objectUrl = null;
+  let objectUrl2 = null;
 
   function viewUrl(doc) {
-    return "/api/v1/documents/" + doc.id + "/view?access_token=" + encodeURIComponent(PreclinicAPI.token());
+    return "/api/v1/documents/" + doc.id + "/view?access_token=" + encodeURIComponent(API.token());
   }
   function fileUrl(doc) {
-    return "/api/v1/documents/" + doc.id + "/file?access_token=" + encodeURIComponent(PreclinicAPI.token());
+    return "/api/v1/documents/" + doc.id + "/file?access_token=" + encodeURIComponent(API.token());
   }
 
-  async function checkView(doc) {
-    // Header-only probe: fetch resolves on response headers; abort right after
-    // reading status/content-type so the file body is never downloaded twice.
-    // A single retry covers transient 429 rate-limit responses.
-    const ctl = new AbortController();
+  async function fetchBlob(url) {
+    // Use Authorization header (real auth) + query token fallback for compatibility.
+    // Retry once on 429.
+    const headers = {};
+    const tok = API.token();
+    if (tok) headers["Authorization"] = "Bearer " + tok;
     let res;
     try {
-      res = await fetch(viewUrl(doc), { credentials: "include", signal: ctl.signal });
+      res = await fetch(url, { headers, credentials: "include" });
       if (res.status === 429) {
         await new Promise((r) => setTimeout(r, 1200));
-        res = await fetch(viewUrl(doc), { credentials: "include", signal: ctl.signal });
+        res = await fetch(url, { headers, credentials: "include" });
       }
     } catch (_e) {
-      return { ok: false, code: "error" };
+      return { ok: false, code: "error", status: 0 };
     }
-    const status = res.status;
-    const type = res.headers.get("content-type") || doc.mimeType || "";
-    try { ctl.abort(); } catch (_e) { /* ignore */ }
-    if (status === 404) return { ok: false, code: "missing" };
-    if (status === 403) return { ok: false, code: "forbidden" };
-    if (status === 400 || status === 413) return { ok: false, code: "invalid" };
-    if (!res.ok) return { ok: false, code: "error" };
-    return { ok: true, type };
+    if (res.status === 404) return { ok: false, code: "missing", status: 404 };
+    if (res.status === 403) return { ok: false, code: "forbidden", status: 403 };
+    if (res.status === 401) return { ok: false, code: "forbidden", status: 401 };
+    if (!res.ok) return { ok: false, code: "error", status: res.status };
+    const ct = res.headers.get("content-type") || "";
+    const blob = await res.blob();
+    return { ok: true, blob, contentType: ct };
   }
 
   function mediaKind(type, doc) {
-    if (/pdf/.test(type)) return "pdf";
-    if (/^image\//.test(type)) return "image";
-    if (/text\/plain/.test(type) || /\.(txt|md|csv|json)$/i.test(doc.originalFilename || "")) return "text";
+    const mt = (type || doc.mimeType || "").toLowerCase();
+    if (/pdf/.test(mt)) return "pdf";
+    if (/^image\//.test(mt) || /\.(jpe?g|png|webp)$/i.test(doc.originalFilename || "")) return "image";
+    if (/text\/plain/.test(mt) || /\.(txt|md|csv|json)$/i.test(doc.originalFilename || "")) return "text";
     return "other";
   }
 
@@ -61,27 +66,34 @@
       (extra ? '<div class="sub">' + E(extra) + "</div>" : "") + "</div>";
   }
 
+  function revokeUrls() {
+    if (objectUrl) { try { URL.revokeObjectURL(objectUrl); } catch (_e) {} objectUrl = null; }
+    if (objectUrl2) { try { URL.revokeObjectURL(objectUrl2); } catch (_e) {} objectUrl2 = null; }
+  }
+
   async function open(doc, opts) {
     currentDoc = doc;
     zoom = 1;
     entityCache = null;
     close();
+    revokeUrls();
+
     overlay = document.createElement("div");
     overlay.className = "viewer-ov";
     overlay.innerHTML =
-      '<div class="viewer" role="dialog" aria-modal="true">' +
-      '<div class="viewer-head"><strong class="v-name">' + UI.icon("doc", 15) + " " + E(doc.originalFilename) + "</strong>" +
-      "<span>" + UI.chip(doc.documentType || "FILE") + "</span><span>" + UI.chip(doc.processingStatus) + "</span>" +
-      '<button class="ic-btn" id="vClose" title="Close">' + UI.icon("x", 15) + "</button></div>" +
-      '<div class="viewer-tools">' +
-      '<button id="vModeDoc" class="on">' + t("docsView") + "</button>" +
-      '<button id="vModeExt">' + t("docsExt") + "</button>" +
-      '<button id="vModeBoth">Both</button>' +
-      '<span style="flex:1"></span>' +
-      '<button id="vZoomOut" title="Zoom out">' + UI.icon("zoomOut", 14) + "</button>" +
+      '<div class="viewer" role="dialog" aria-modal="true" id="viewerRoot">' +
+      '<div class="viewer-head"><div class="vh-left"><strong class="v-name">' + UI.icon("doc", 15) + " " + E(doc.originalFilename) + "</strong>" +
+      "<span>" + UI.chip(doc.documentType || "FILE") + "</span><span>" + UI.chip(doc.processingStatus) + "</span></div>" +
+      '<button class="ic-btn" id="vClose" title="Close" aria-label="Close">' + UI.icon("x", 15) + "</button></div>" +
+      '<div class="viewer-tools" id="vTools">' +
+      '<div class="vt-group"><button id="vModeDoc" class="on">' + t("docsView") + "</button>" +
+      '<button id="vModeExt">' + t("docsExt") + "</button><button id=\"vModeBoth\">Both</button></div>" +
+      '<div class="vt-group zoom-group"><button id="vZoomOut" title="Zoom out">' + UI.icon("zoomOut", 14) + "</button>" +
+      '<span class="zoom-lbl" id="vZoomLbl">100%</span>' +
       '<button id="vZoomIn" title="Zoom in">' + UI.icon("zoomIn", 14) + "</button>" +
-      '<button id="vFull">' + UI.icon("expand", 14) + " " + t("docsFull") + "</button>" +
-      '<a class="btn ghost tiny" id="vDl" href="' + E(fileUrl(doc)) + '">' + UI.icon("download", 14) + " Download</a>" +
+      '<button id="vFit" title="Fit">Fit</button></div>' +
+      '<div class="vt-group"><button id="vFull">' + UI.icon("expand", 14) + " " + t("docsFull") + "</button>" +
+      '<a class="btn ghost tiny" id="vDl" href="' + E(fileUrl(doc)) + '">' + UI.icon("download", 14) + " Download</a></div>" +
       "</div>" +
       '<div class="viewer-body" id="vBody"><div class="viewer-media" id="vMedia"><div class="state"><span class="st-ic st-spin"></span><div>Loading…</div></div></div>' +
       '<div class="viewer-ext" id="vExt"></div></div></div>';
@@ -92,41 +104,52 @@
 
     const media = overlay.querySelector("#vMedia");
     const ext = overlay.querySelector("#vExt");
-    ext.style.display = "none"; // shown when "extracted" or "both"
+    ext.style.display = "none";
 
     setMode(opts && opts.extract ? "ext" : "doc");
-    loadMedia();
+    await loadMedia();
 
     async function loadMedia() {
       media.innerHTML = '<div class="state"><span class="st-ic st-spin"></span><div>Loading…</div></div>';
-      let chk;
-      try { chk = await checkView(doc); } catch (_e) { chk = { ok: false, code: "error" }; }
-      if (!chk.ok) { media.innerHTML = errorHtml(chk.code); return; }
-      const kind = mediaKind(chk.type, doc);
+      // Use token-authenticated fetch → Blob → ObjectURL (fixes Chrome blocked iframe)
+      const apiUrl = "/api/v1/documents/" + doc.id + "/view";
+      const res = await fetchBlob(apiUrl);
+      if (!res.ok) { media.innerHTML = errorHtml(res.code, "Status " + (res.status || "")); return; }
+      const kind = mediaKind(res.contentType, doc);
       if (kind === "pdf") {
-        media.innerHTML = '<iframe src="' + E(viewUrl(doc)) + '" title="' + E(doc.originalFilename) + '"></iframe>';
+        // Create Object URL for PDF blob
+        if (objectUrl) { try { URL.revokeObjectURL(objectUrl); } catch (_e) {} }
+        objectUrl = URL.createObjectURL(res.blob);
+        // Use iframe with blob URL (Chrome compatible) — fallback embed if needed
+        media.innerHTML = '<div class="pdf-wrap"><iframe src="' + E(objectUrl) + '" title="' + E(doc.originalFilename) + '" class="pdf-iframe" loading="lazy"></iframe></div>';
       } else if (kind === "image") {
+        if (objectUrl) { try { URL.revokeObjectURL(objectUrl); } catch (_e) {} }
+        objectUrl = URL.createObjectURL(res.blob);
+        const wrap = document.createElement("div");
+        wrap.className = "img-wrap";
         const img = document.createElement("img");
         img.alt = doc.originalFilename;
-        img.src = viewUrl(doc);
+        img.src = objectUrl;
+        img.className = "zoomable";
+        img.style.transform = "scale(" + zoom + ")";
         img.onerror = () => { media.innerHTML = errorHtml("error"); };
+        wrap.appendChild(img);
         media.innerHTML = "";
-        media.appendChild(img);
-        zoom = 1;
+        media.appendChild(wrap);
+        applyZoom();
       } else if (kind === "text") {
         try {
-          const r = await fetch(viewUrl(doc));
-          if (!r.ok) throw new Error(String(r.status));
-          const text = await r.text();
+          const text = await res.blob.text();
           const pre = document.createElement("pre");
           pre.textContent = text;
+          pre.className = "text-preview";
           media.innerHTML = "";
           media.appendChild(pre);
         } catch (_e) {
           media.innerHTML = errorHtml("error");
         }
       } else {
-        media.innerHTML = errorHtml("invalid", (doc.originalFilename || "") + " · " + (chk.type || doc.mimeType || ""));
+        media.innerHTML = errorHtml("invalid", (doc.originalFilename || "") + " · " + (res.contentType || doc.mimeType || ""));
       }
     }
 
@@ -181,8 +204,37 @@
     }
 
     function applyZoom() {
-      const img = overlay.querySelector("#vMedia img");
-      if (img) img.style.transform = "scale(" + zoom + ")";
+      const img = overlay.querySelector("#vMedia img.zoomable");
+      const lbl = overlay.querySelector("#vZoomLbl");
+      if (img) {
+        img.style.transform = "scale(" + zoom + ")";
+        img.style.transformOrigin = "center top";
+      }
+      if (lbl) lbl.textContent = Math.round(zoom * 100) + "%";
+      const iframe = overlay.querySelector("#vMedia iframe.pdf-iframe");
+      if (iframe) {
+        // For PDF, zoom affects container scale via CSS transform on wrap
+        const wrap = iframe.closest(".pdf-wrap");
+        if (wrap) wrap.style.transform = "scale(" + zoom + ")";
+        if (wrap) wrap.style.transformOrigin = "top left";
+      }
+    }
+
+    function doFullscreen() {
+      const root = document.getElementById("viewerRoot");
+      if (!root) return;
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+        return;
+      }
+      if (root.requestFullscreen) {
+        root.requestFullscreen().catch(() => {
+          // fallback: large modal
+          root.classList.toggle("fullscreen-fallback");
+        });
+      } else {
+        root.classList.toggle("fullscreen-fallback");
+      }
     }
 
     overlay.querySelector("#vModeDoc").addEventListener("click", () => setMode("doc"));
@@ -190,10 +242,14 @@
     overlay.querySelector("#vModeBoth").addEventListener("click", () => setMode("both"));
     overlay.querySelector("#vZoomIn").addEventListener("click", () => { zoom = Math.min(3, zoom + 0.2); applyZoom(); });
     overlay.querySelector("#vZoomOut").addEventListener("click", () => { zoom = Math.max(0.4, zoom - 0.2); applyZoom(); });
-    overlay.querySelector("#vFull").addEventListener("click", () => {
-      window.open(viewUrl(doc), "_blank", "noopener");
+    overlay.querySelector("#vFit").addEventListener("click", () => { zoom = 1; applyZoom(); });
+    overlay.querySelector("#vFull").addEventListener("click", doFullscreen);
+    // Keyboard zoom
+    overlay.addEventListener("keydown", (e) => {
+      if (e.key === "+" || e.key === "=") { zoom = Math.min(3, zoom + 0.2); applyZoom(); }
+      if (e.key === "-") { zoom = Math.max(0.4, zoom - 0.2); applyZoom(); }
+      if (e.key === "0") { zoom = 1; applyZoom(); }
     });
-
   }
 
   function escClose(e) { if (e.key === "Escape") close(); }
@@ -203,9 +259,9 @@
       overlay.remove();
       overlay = null;
       document.removeEventListener("keydown", escClose);
+      revokeUrls();
     }
   }
 
-  // re-declare loadExt properly (hoisted above is a placeholder)
-  global.PreclinicDocViewer = { open, close, viewUrl };
+  global.PreclinicDocViewer = { open, close, viewUrl, fileUrl };
 })(window);

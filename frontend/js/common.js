@@ -139,5 +139,13 @@
     return h < 12 ? I("gMorning") : h < 17 ? I("gAfternoon") : I("gEvening");
   }
 
+  // Fallback for browsers without :has() — mark shell pages for overflow handling
+  try {
+    if (document.querySelector('.shell')) {
+      document.documentElement.classList.add('has-shell');
+      document.body.classList.add('has-shell');
+    }
+  } catch (_e) { /* ignore */ }
+
   global.PreclinicUI = { $, $$, toast, errMsg, fmtTime, fmtDate, chip, bindLogout, fillWho, navActive, esc, relTime, state, icon, greeting };
 })(window);

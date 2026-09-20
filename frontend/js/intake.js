@@ -78,7 +78,7 @@
       const err = (ev && ev.error) || "";
       let state = "unavailable";
       if (err === "not-allowed" || err === "service-not-allowed") state = "denied";
-      else if (err === "language-not-supported") state = "unsupported";
+      else if (err === "language-not-supported") state = "langUnsupported";
       else if (err === "no-speech") state = "nospeech";
       say(state);
       if (options.onError) { try { options.onError(err); } catch (_e) { /* ignore */ } }

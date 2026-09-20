@@ -92,3 +92,19 @@
 .voice-state.err::before { background: var(--alert); }
 .btn.listening { border-color: var(--alert); color: var(--alert); background: #fdf3f3; }
 .btn.listening .rec-dot { display: inline-block; }
+
+/* Fixed systematic history layout — no giant gaps */
+.hist-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 18px; }
+.hist-group { display: flex; flex-direction: column; gap: 10px; min-width: 0; background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 14px 14px 12px; }
+.hist-group .eyebrow { margin-bottom: 2px; }
+.hist-group .field { margin: 0; }
+.hist-group .field label { font-size: 12px; margin-bottom: 4px; }
+.hist-group textarea { min-height: 56px; resize: vertical; }
+.ayush-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.compact-field label { font-size: 11px; text-transform: capitalize; }
+.ayush-input-row { display: flex; flex-direction: column; gap: 6px; }
+.ayush-input-row input { width: 100%; }
+.ayush-input-row .btn-row.tiny { gap: 4px; }
+.ayush-input-row .btn-row.tiny .btn { font-size: 11px; padding: 4px 8px; }
+.form-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--line); position: sticky; bottom: 0; background: var(--white); z-index: 2; }
+@media (max-width: 860px) { .hist-grid { grid-template-columns: 1fr; } }

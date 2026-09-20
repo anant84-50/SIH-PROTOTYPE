@@ -612,15 +612,14 @@
   function startPatientTour() {
     const t = I.t;
     window.PreclinicTutorial.start("PATIENT", [
-      { id: "welcome", title: t("tutP1t"), body: t("tutP1b"), center: true },
-      { id: "newvisit", title: t("tutP2t"), body: t("tutP2b"), target: '#patNav a[data-route="new"]' },
+      { id: "dashboard", title: t("tutP1t"), body: t("tutP1b"), goFirst: "/", target: "#patMain .card" },
+      { id: "newvisit", title: t("tutP2t"), body: t("tutP2b"), target: '#patNav a[data-route="new"]', goFirst: "/" },
       { id: "pathway", title: t("tutP3t"), body: t("tutP3b"), goFirst: "new-visit", target: ".pathway" },
-      { id: "answer", title: t("tutP4t"), body: t("tutP4b"), target: "#voiceBtn" },
-      { id: "history", title: t("tutP5t"), body: t("tutP5b"), target: '#patNav a[data-route="history"]' },
-      { id: "docs", title: t("tutP6t"), body: t("tutP6b"), goFirst: "documents", target: "#dz" },
+      { id: "answer", title: t("tutP4t"), body: t("tutP4b"), target: "#qBox" },
+      { id: "history", title: t("tutP5t"), body: t("tutP5b"), target: ".hist-grid" },
+      { id: "docs", title: t("tutP6t"), body: t("tutP6b"), target: "#dz" },
       { id: "review", title: t("tutP7t"), body: t("tutP7b"), target: "#sumOut" },
-      { id: "confirm", title: t("tutP8t"), body: t("tutP8b"), center: true },
-      { id: "submit", title: t("tutP9t"), body: t("tutP9b"), goFirst: "/", target: "#patMain .card" },
+      { id: "submit", title: t("tutP8t") + " / " + t("tutP9t"), body: t("tutP8b") + " " + t("tutP9b"), target: "#sumActions" },
     ]);
   }
 
@@ -950,10 +949,11 @@
             unavailable: ["voiceUnavail", "err"],
             denied: ["voiceDenied", "err"],
             unsupported: ["voiceUnsupported", "err"],
+            langUnsupported: ["voiceLangUnsupported", "err"],
           };
           const m = map[state];
           if (!m) return;
-          if (state !== "unsupported") clearRec();
+          if (state !== "unsupported" && state !== "langUnsupported") clearRec();
           setVoiceState(I.t(m[0]), m[1]);
         },
       });
@@ -963,10 +963,8 @@
     body.querySelector("#wNext").addEventListener("click", () => wizRender(5, hostOf(body)));
   }
 
-  /* Step 5 — health history + AYUSH */
+  /* Step 5 — health history + AYUSH — fixed systematic layout, no giant gaps */
   async function wizHistory(body) {
-    // Prefill from structured data if a history version exists; when reusing,
-    // the backend base values are already in the interview answers.
     let h = {};
     let ay = {};
     if (wiz.visit) {
@@ -974,29 +972,35 @@
       if (vRes.success) { h = vRes.data.history || {}; ay = vRes.data.ayush || {}; }
     }
     const reuseNote = wiz.reuseFrom
-      ? '<p class="small muted" style="margin-top:6px">' + t("pPrevNote") + "</p>" : "";
+      ? '<div class="banner-ai" style="margin-bottom:12px">' + UI.icon("history", 14) + "<div class=\"small\">" + t("pPrevNote") + "</div></div>" : "";
     body.innerHTML =
-      '<div class="card"><h3>' + t("pHistTitle") + "</h3>" + reuseNote +
-      '<div class="field"><label>' + I.t("pmh") + '</label><textarea id="pmh" rows="2">' + E(h.pastMedicalHistory || "") + "</textarea></div>" +
-      '<div class="field"><label>' + I.t("psh") + '</label><textarea id="psh" rows="2">' + E(h.pastSurgicalHistory || "") + "</textarea></div>" +
-      '<div class="field"><label>' + I.t("fh") + '</label><textarea id="fh" rows="2">' + E(h.familyHistory || "") + "</textarea></div>" +
-      '<div class="field"><label>' + I.t("worries") + '</label><textarea id="concerns" rows="2">' + E(h.patientConcerns || "") + "</textarea></div>" +
-      '<div class="grid-2">' +
-      '<div class="field"><label>' + t("pMeds") + ' <span class="muted">(comma separated)</span></label><input id="meds" value="' + E((h.medications || []).map((m) => typeof m === "string" ? m : (m.name || "")).join(", ")) + '"/></div>' +
-      '<div class="field"><label>' + t("pAllergies") + ' <span class="muted">(comma separated)</span></label><input id="alls" value="' + E((h.allergies || []).map((a) => typeof a === "string" ? a : (a.substance || "")).join(", ")) + '"/></div>' +
+      '<div class="card" style="max-width:780px">' + reuseNote +
+      '<h3 style="margin:0 0 12px">' + t("pHistTitle") + "</h3>" +
+      '<div class="hist-grid">' +
+        '<div class="hist-group"><div class="eyebrow">Medical history</div>' +
+          '<div class="field"><label>' + I.t("pmh") + '</label><textarea id="pmh" rows="2">' + E(h.pastMedicalHistory || "") + "</textarea></div>" +
+          '<div class="field"><label>' + I.t("psh") + '</label><textarea id="psh" rows="2">' + E(h.pastSurgicalHistory || "") + "</textarea></div>" +
+          '<div class="field"><label>' + I.t("fh") + '</label><textarea id="fh" rows="2">' + E(h.familyHistory || "") + "</textarea></div>" +
+          '<div class="field"><label>' + I.t("worries") + '</label><textarea id="concerns" rows="2">' + E(h.patientConcerns || "") + "</textarea></div>" +
+        "</div>" +
+        '<div class="hist-group"><div class="eyebrow">' + t("pMeds") + " & " + t("pAllergies") + "</div>" +
+          '<div class="field"><label>' + t("pMeds") + ' <span class="muted">(comma separated)</span></label><input id="meds" value="' + E((h.medications || []).map((m) => typeof m === "string" ? m : (m.name || "")).join(", ")) + '"/></div>' +
+          '<div class="field"><label>' + t("pAllergies") + ' <span class="muted">(comma separated)</span></label><input id="alls" value="' + E((h.allergies || []).map((a) => typeof a === "string" ? a : (a.substance || "")).join(", ")) + '"/></div>' +
+          '<div class="sec-h" style="margin-top:16px">' + t("pAyushOpt") + "</div>" +
+          '<p class="small muted" style="margin:-4px 0 8px">' + t("pAyushNote") + "</p>" +
+          '<div class="ayush-grid">' +
+            ayushFieldRow("prakriti", ay.prakriti || "") + ayushFieldRow("vikriti", ay.vikriti || "") +
+            ayushFieldRow("ahara", ay.ahara || "") + ayushFieldRow("vihara", ay.vihara || "") + ayushFieldRow("nidana", ay.nidana || "") +
+          "</div>" +
+        "</div>" +
       "</div>" +
-      '<div class="sec-h">' + t("pAyushOpt") + "</div>" +
-      '<p class="small muted">' + t("pAyushNote") + "</p>" +
-      ayushFieldRow("prakriti", ay.prakriti || "") + ayushFieldRow("vikriti", ay.vikriti || "") +
-      ayushFieldRow("ahara", ay.ahara || "") + ayushFieldRow("vihara", ay.vihara || "") + ayushFieldRow("nidana", ay.nidana || "") +
-      '<div class="btn-row">' +
-      '<button class="btn ghost" id="wBack">← ' + I.t("back") + "</button>" +
-      '<button class="btn" id="wNext">' + I.t("continue") + " →</button></div></div>";
+      '<div class="form-actions"><button class="btn ghost" id="wBack">← ' + I.t("back") + "</button><button class=\"btn\" id=\"wNext\">" + I.t("continue") + " →</button></div>" +
+      "</div>";
 
-    // per-field quick options: Not sure / None / Skip — all stored as empty (not provided), never fake text
     const FIELDS = ["prakriti", "vikriti", "ahara", "vihara", "nidana"];
     FIELDS.forEach((f) => {
       const row = body.querySelector('[data-ayush="' + f + '"]');
+      if (!row) return;
       row.querySelectorAll("[data-q]").forEach((b) => b.addEventListener("click", () => {
         row.querySelector("input").value = "";
       }));
@@ -1027,11 +1031,12 @@
   }
 
   function ayushFieldRow(f, val) {
-    return '<div class="field" data-ayush="' + f + '" style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">' +
-      '<div style="flex:1 1 220px"><label>' + f + "</label><input id=\"" + f + "\" value=\"" + E(val) + "\"/></div>" +
-      '<button type="button" class="btn ghost tiny" data-q="' + t("pNotSure") + '">' + t("pNotSure") + "</button>" +
+    return '<div class="field compact-field" data-ayush="' + f + '">' +
+      '<label>' + f + "</label>" +
+      '<div class="ayush-input-row"><input id="' + f + '" value="' + E(val) + '" placeholder="' + t("pNotSure") + " / " + t("pNone") + '"/>' +
+      '<div class="btn-row tiny"><button type="button" class="btn ghost tiny" data-q="' + t("pNotSure") + '">' + t("pNotSure") + "</button>" +
       '<button type="button" class="btn ghost tiny" data-q="' + t("pNone") + '">' + t("pNone") + "</button>" +
-      '<button type="button" class="btn ghost tiny" data-q="' + t("pSkip") + '">' + t("pSkip") + "</button></div>";
+      '<button type="button" class="btn ghost tiny" data-q="' + t("pSkip") + '">' + t("pSkip") + "</button></div></div></div>";
   }
 
   /* Step 6 — documents */

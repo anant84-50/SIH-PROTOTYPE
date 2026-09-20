@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Preclinic IQ AI — Ministry of Ayush</title>
-  <link rel="stylesheet" href="/css/base.css?v=12" />
-  <link rel="stylesheet" href="/css/layout.css?v=12" />
-  <link rel="stylesheet" href="/css/components.css?v=6" />
-  <link rel="stylesheet" href="/css/site.css?v=6" />
+  <link rel="stylesheet" href="/css/base.css?v=13" />
+  <link rel="stylesheet" href="/css/layout.css?v=13" />
+  <link rel="stylesheet" href="/css/components.css?v=7" />
+  <link rel="stylesheet" href="/css/site.css?v=13" />
 </head>
 <body class="landing">
   <nav class="pub-nav">
@@ -18,14 +18,15 @@
         <small data-i18n="brandSub">Ministry of Ayush · AIIA</small>
       </div>
     </div>
-        <div class="pub-links">
-      <a href="/" class="on">Home</a>
-      <a href="/how-it-works" >Patient Journey</a>
-      <a href="/clinical-workflow" >Clinical Workflow</a>
-      <a href="/capabilities" >Capabilities</a>
-      <a href="/privacy" >Safety &amp; Privacy</a>
-      <a href="/technology" >Technology</a>
-      <a href="/roadmap" >Roadmap</a><div class="lang-switch dark">
+    <div class="pub-links">
+      <a href="/" class="on" data-i18n="navHome">Home</a>
+      <a href="/how-it-works" data-i18n="navJourney">Patient Journey</a>
+      <a href="/clinical-workflow" data-i18n="navClinical">Clinical Workflow</a>
+      <a href="/capabilities" data-i18n="navCaps">Capabilities</a>
+      <a href="/privacy" data-i18n="navSafety">Safety &amp; Privacy</a>
+      <a href="/technology" data-i18n="navTech">Technology</a>
+      <a href="/roadmap" data-i18n="navRoadmap">Roadmap</a>
+      <div class="lang-switch dark">
         <button type="button" data-lang="en">EN</button>
         <button type="button" data-lang="hi">हिं</button>
         <button type="button" data-lang="ta">த</button>
@@ -50,27 +51,29 @@
       <div class="btn-row hero-ctas">
         <a class="btn gold" href="/login?role=patient" data-i18n="beginIntake">Begin intake</a>
         <a class="btn" href="/login?role=doctor" data-i18n="enterDesk">Enter the institute desk</a>
-        <a class="btn ghost" href="/how-it-works" data-i18n="navJourneyArrow">See the patient journey →</a>
+        <a class="btn ghost" href="/how-it-works" data-i18n="exploreJourney">Explore the Patient Journey →</a>
       </div>
     </div>
     <div class="hero-visual" aria-hidden="true">
-      <div class="vis-frame">
+      <div class="vis-frame vis-3d">
+        <div class="vis-glow-bg"></div>
+        <div class="vis-depth-dots"></div>
         <div class="vis-title">
           <span class="eyebrow" data-i18n="howVisit">How a visit is prepared</span>
           <strong data-i18n="fromWord">From first word to verified chart</strong>
         </div>
         <div class="vis-flow">
-          <div class="vis-node n-pat"><span class="vis-ic">P</span><em data-i18n="visPat">Patient</em></div>
+          <div class="vis-node n-pat"><span class="vis-ic"><span class="ic-inner">P</span><span class="vis-pulse"></span></span><em data-i18n="visPat">Patient</em><span class="vis-float-card glass pat">Intake start</span></div>
+          <span class="vis-wire"><i></i><span class="wave"></span></span>
+          <div class="vis-node n-voice"><span class="vis-ic voice-ic"><span class="waveform"><b></b><b></b><b></b><b></b></span></span><em data-i18n="visVoice">Voice</em></div>
           <span class="vis-wire"><i></i></span>
-          <div class="vis-node n-voice"><span class="vis-ic">◉</span><em data-i18n="visVoice">Voice</em></div>
+          <div class="vis-node n-ai"><span class="vis-ic ai-ic"><span class="ic-inner">✦</span><span class="ai-glow"></span></span><em data-i18n="visAI">AI</em></div>
+          <span class="vis-wire"><i></i><span class="scan"></span></span>
+          <div class="vis-node n-ocr"><span class="vis-ic ocr-ic"><span class="ic-inner">◫</span><span class="ocr-scan"></span></span><em data-i18n="visOCR">OCR</em></div>
           <span class="vis-wire"><i></i></span>
-          <div class="vis-node n-ai"><span class="vis-ic">✦</span><em data-i18n="visAI">AI</em></div>
+          <div class="vis-node n-ctx"><span class="vis-ic"><span class="ic-inner">▤</span></span><em data-i18n="visCtx">Context</em></div>
           <span class="vis-wire"><i></i></span>
-          <div class="vis-node n-ocr"><span class="vis-ic"></span><em data-i18n="visOCR">OCR</em></div>
-          <span class="vis-wire"><i></i></span>
-          <div class="vis-node n-ctx"><span class="vis-ic">▤</span><em data-i18n="visCtx">Context</em></div>
-          <span class="vis-wire"><i></i></span>
-          <div class="vis-node n-doc"><span class="vis-ic">✚</span><em data-i18n="visDoc">Doctor</em></div>
+          <div class="vis-node n-doc"><span class="vis-ic doc-ic"><span class="ic-inner">✚</span></span><em data-i18n="visDoc">Doctor</em><span class="vis-float-card glass doc-card">Verified · DOC-001</span></div>
         </div>
         <div class="vis-cards">
           <div class="vis-card">
@@ -94,8 +97,9 @@
   <section class="story journey-section" id="journey">
     <div class="journey-head">
       <div>
-        <div class="eyebrow">The patient journey</div>
-        <h1>Nine steps, from a first word to a verified case.</h1>
+        <div class="eyebrow">Patient Journey</div>
+        <h1>How a Patient Visit Moves from Intake to Verified Case</h1>
+        <p class="muted small" style="max-width:60ch;margin-top:6px">Nine steps, from a first word to a verified case. Each step stores real data, not a mock.</p>
       </div>
       <div class="car-nav">
         <button class="ic-btn" id="carPrev" aria-label="Previous slide">‹</button>
@@ -116,29 +120,104 @@
       </div>
       <div class="car-dots" id="carDots" role="tablist"></div>
     </div>
-    <div class="story-grid" style="margin-top:8px">
-      <article class="story-card">
-        <h3>Returning-visit intelligence</h3>
-        <p>If your previous visit is structurally related (same pathway, shared medications or allergies — never plain text matching), you can review it and answer only what may have changed.</p>
-        <a class="btn ghost tiny" href="/capabilities">Capabilities</a>
+  </section>
+
+  <!-- Visual trio: patient intake / AI+OCR / doctor review -->
+  <section class="story visual-trio-section">
+    <div class="trio-grid">
+      <article class="trio-card">
+        <div class="trio-ill intake-ill">
+          <span class="trio-ic">◉</span>
+          <div class="trio-waves"><i></i><i></i><i></i></div>
+          <span class="trio-label">Voice + Text Intake</span>
+        </div>
+        <h3>Patient intake that stays in your language</h3>
+        <p>Adaptive questions, quick-tap answers, voice with live feedback. The transcript lands in the answer box for review — never silently translated.</p>
       </article>
-      <article class="story-card">
-        <h3>Doctor desk with real verification</h3>
-        <p>Queue with search and filters, full patient workspace, document viewer, versioned summaries, and verification written to the database.</p>
-        <a class="btn ghost tiny" href="/login?role=doctor">Doctor sign in</a>
+      <article class="trio-card">
+        <div class="trio-ill ocr-ill">
+          <span class="trio-ic">◫</span>
+          <span class="trio-scan"></span>
+          <span class="trio-label">Document &amp; OCR</span>
+        </div>
+        <h3>AI + documents become source-linked context</h3>
+        <p>PDF/JPG/PNG uploaded, OCR queued in backend, entities extracted with confidence. Low-confidence stays NEEDS_REVIEW until a human closes it.</p>
       </article>
-      <article class="story-card">
-        <h3>Emergency safety net</h3>
-        <p>Fixed red-flag rules run in the backend. Patient-triggered and rule-triggered alerts reach the desk in real time, with acknowledge/resolve states and audit entries.</p>
-        <a class="btn ghost tiny" href="/privacy">Safety model</a>
-      </article>
-      <article class="story-card">
-        <h3>Four languages, honestly</h3>
-        <p>English, Hindi, Tamil and Bengali. Voice recognition, interview text and buttons follow the chosen language; the transcript is never silently translated.</p>
-        <a class="btn ghost tiny" href="/how-it-works">How it works</a>
+      <article class="trio-card">
+        <div class="trio-ill doc-ill">
+          <span class="trio-ic">✚</span>
+          <div class="trio-check">✓ Verified</div>
+          <span class="trio-label">Doctor review</span>
+        </div>
+        <h3>Doctor reviews with sources attached</h3>
+        <p>Queue, workspace, versioned summaries, real document viewer, corrections and verification — all persisted with audit.</p>
       </article>
     </div>
-    <p class="small muted" style="margin-top:14px" data-i18n="landingNote">A working prototype: the AI provider, OCR and speech services are deterministic demo implementations behind clean interfaces. Records, permissions, workflows and audit are real.</p>
+  </section>
+
+  <section class="story compact-sections">
+    <div class="compact-grid">
+      <article class="compact-card">
+        <div class="eyebrow">How it helps</div>
+        <h3>Less time hunting history, more time with the patient</h3>
+        <ul>
+          <li>Returning-visit intelligence — structurally related visits surface, not text match.</li>
+          <li>Patient speaks in their language, transcript stays there.</li>
+          <li>Doctor gets a source-labelled draft before the consultation.</li>
+        </ul>
+        <a class="btn ghost tiny" href="/how-it-works">Patient Journey</a>
+      </article>
+      <article class="compact-card">
+        <div class="eyebrow">Capabilities</div>
+        <h3>What the desk can actually do</h3>
+        <ul>
+          <li>6 complaint pathways, 4 languages, voice + text, document OCR.</li>
+          <li>Versioned AI summaries, conflicts, timeline, emergency rules.</li>
+          <li>FHIR/ABDM-ready identifiers, real verification state machine.</li>
+        </ul>
+        <a class="btn ghost tiny" href="/capabilities">Capabilities</a>
+      </article>
+      <article class="compact-card">
+        <div class="eyebrow">Safety &amp; Privacy</div>
+        <h3>Deterministic safety, not AI guesswork</h3>
+        <ul>
+          <li>Fixed red-flag rules in backend, emergency inbox with ack/resolve.</li>
+          <li>Records visible only to patient + authorized clinicians.</li>
+          <li>Audit log, purpose-limited consent per visit.</li>
+        </ul>
+        <a class="btn ghost tiny" href="/privacy">Safety model</a>
+      </article>
+      <article class="compact-card">
+        <div class="eyebrow">Technology Readiness</div>
+        <h3>Clean interfaces, real persistence</h3>
+        <ul>
+          <li>AI provider, OCR, speech behind swappable interfaces.</li>
+          <li>Postgres-ready schema, file storage abstraction, JWT auth.</li>
+          <li>Designed for ABDM, FHIR, longitudinal timeline growth.</li>
+        </ul>
+        <a class="btn ghost tiny" href="/technology">Technology</a>
+      </article>
+      <article class="compact-card">
+        <div class="eyebrow">Roadmap</div>
+        <h3>From prototype to ward</h3>
+        <ul>
+          <li><strong>Now:</strong> Intake, OCR, verification, emergency, audit — working.</li>
+          <li><strong>Next:</strong> ABDM linkage, richer AYUSH reasoning, mobile intake.</li>
+          <li><strong>Later:</strong> Multi-institute, analytics, FHIR export.</li>
+        </ul>
+        <a class="btn ghost tiny" href="/roadmap">Roadmap</a>
+      </article>
+      <article class="compact-card highlight">
+        <div class="eyebrow">Four languages, honestly</div>
+        <h3>English · हिंदी · தமிழ் · বাংলা</h3>
+        <p>Voice recognition uses the language you selected — EN→en-IN, HI→hi-IN, TA→ta-IN, BN→bn-IN. If the browser cannot do it, you see a clear message and can type.</p>
+        <div class="kicker" style="margin-top:10px">
+          <span class="chip leaf">No silent translation</span>
+          <span class="chip gold">Transcript stays in spoken language</span>
+        </div>
+      </article>
+    </div>
+    <p class="small muted" style="margin-top:18px" data-i18n="landingNote">A working prototype: the AI provider, OCR and speech services are deterministic demo implementations behind clean interfaces. Records, permissions, workflows and audit are real.</p>
   </section>
 
   <footer class="pub-foot2">
@@ -166,20 +245,16 @@
       </div>
       <div class="foot-col foot-tech">
         <h5>Technology &amp; readiness</h5>
-        <p class="small muted">Structured intake, deterministic safety rules, versioned summaries and full audit — designed for FHIR/ABDM interconnection.</p>
+        <p class="small muted" data-i18n="footTech">Structured intake, deterministic safety rules, versioned summaries and full audit — designed for FHIR/ABDM interconnection.</p>
       </div>
     </div>
     <p class="foot-note" data-i18n="disclaimer">AI prepares structured context. It does not diagnose or prescribe. A registered practitioner must verify.</p>
   </footer>
 
-  <script src="/js/i18n.js?v=13"></script>
+  <script src="/js/i18n.js?v=14"></script>
   <script>
     PreclinicI18n.bindSwitch();
     PreclinicI18n.apply();
-
-    /* Compact patient-journey carousel: fixed height, contained slides,
-       dots + arrows, controlled autoplay that pauses on hover/focus and
-       is disabled entirely for prefers-reduced-motion. */
     (function () {
       const car = document.getElementById("car");
       const track = document.getElementById("carTrack");
@@ -188,7 +263,6 @@
       const N = slides.length;
       let idx = 0, timer = null, hover = false;
       const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
       slides.forEach((_, i) => {
         const b = document.createElement("button");
         b.type = "button";
@@ -198,7 +272,6 @@
         dots.appendChild(b);
       });
       const dotEls = Array.from(dots.children);
-
       function paint() {
         track.style.transform = "translateX(" + (-idx * 100) + "%)";
         dotEls.forEach((d, i) => d.classList.toggle("on", i === idx));
@@ -224,7 +297,6 @@
         if (e.key === "ArrowRight") next(true);
         if (e.key === "ArrowLeft") go(idx - 1, true);
       });
-      // basic swipe
       let x0 = null;
       car.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; }, { passive: true });
       car.addEventListener("touchend", (e) => {
