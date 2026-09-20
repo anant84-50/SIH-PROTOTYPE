@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Technology &amp; Readiness · Preclinic IQ AI</title>
+  <link rel="stylesheet" href="/css/base.css?v=12" />
+  <link rel="stylesheet" href="/css/layout.css?v=12" />
+  <link rel="stylesheet" href="/css/components.css?v=6" />
+  <link rel="stylesheet" href="/css/site.css?v=6" />
+</head>
+<body class="landing">
+  <nav class="pub-nav">
+    <div class="brand">
+      <img src="/assets/emblem.png" alt="" />
+      <div><h1>Preclinic IQ AI</h1><small>Technology &amp; Readiness</small></div>
+    </div>
+        <div class="pub-links">
+      <a href="/" >Home</a>
+      <a href="/how-it-works" >Patient Journey</a>
+      <a href="/clinical-workflow" >Clinical Workflow</a>
+      <a href="/capabilities" >Capabilities</a>
+      <a href="/privacy" >Safety &amp; Privacy</a>
+      <a href="/technology" class="on">Technology</a>
+      <a href="/roadmap" >Roadmap</a><div class="lang-switch dark">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="hi">हिं</button>
+        <button type="button" data-lang="ta">த</button>
+        <button type="button" data-lang="bn">বাং</button>
+      </div>
+      <a class="btn nav-signin" href="/login">Sign in</a>
+    </div>
+  </nav>
+  <section class="story">
+    <div class="eyebrow">Technology &amp; readiness</div>
+    <h1>Built as a clinical system, not a demo screen.</h1>
+    <p class="muted" style="max-width:64ch">Preclinic IQ AI is a working prototype with real roles, records, workflows and audit. AI, OCR and speech run on deterministic providers behind clean interfaces — the clinical workflow around them is production-shaped.</p>
+    <div class="story-grid">
+      <article class="story-card"><h3>Patient → Voice → AI → Documents → Context → Doctor</h3><p>Voice and text become structured, source-linked history. Documents are OCR'd with confidence; low-confidence flagged for review. Context is versioned; verification is a persisted state change.</p></article>
+      <article class="story-card"><h3>Deterministic safety</h3><p>Red-flag rules run in backend Python, not in a chatbot. Emergency alerts are acknowledged/resolved with audit. No automatic ambulance or 112 integration.</p></article>
+      <article class="story-card"><h3>Role-based access at the API</h3><p>Patients read only own records; doctors access institute patients; admin sees system. Direct document URLs enforce same checks — 403 on cross-patient access, no filesystem paths exposed.</p></article>
+      <article class="story-card"><h3>Four languages, honestly</h3><p>English, Hindi, Tamil, Bengali. Interview text, buttons and voice recognition follow selected language; transcript stays in spoken language, never silently translated.</p></article>
+      <article class="story-card"><h3>AYUSH as first-class record</h3><p>Prakriti, vikriti, ahara, vihara, nidana — optional, with Skip / I don't know / Not sure / None. Skipped stays unknown, never auto-inferred.</p></article>
+      <article class="story-card"><h3>Interoperability ready</h3><p>Structured output shaped for FHIR/ABDM, clean provider boundaries for AI/OCR/ASR, audit trail of every state change, file storage by pointer not embedded.</p></article>
+    </div>
+    <div class="manuscript" style="margin-top:22px">
+      <div class="eyebrow">What is demonstrable today</div>
+      <p style="max-width:70ch">Login as two different patients and try to open each other's documents (403), open a doctor route as patient (403), watch timeline fill as visit moves intake → AI summary → patient confirm → doctor verify, upload PDF/JPG and open it in doctor viewer with real bytes.</p>
+    </div>
+  </section>
+  <footer class="pub-foot2">
+    <div class="foot-grid">
+      <div class="foot-brand"><img src="/assets/emblem.png" alt="" width="40" height="40" /><div><strong>Preclinic IQ AI</strong><span class="small muted">Ministry of Ayush · AIIA</span></div></div>
+      <div class="foot-col"><h5>Product</h5><a href="/how-it-works">Patient Journey</a><a href="/clinical-workflow">Clinical Workflow</a><a href="/capabilities">Capabilities</a><a href="/roadmap">Roadmap</a></div>
+      <div class="foot-col"><h5>Trust</h5><a href="/privacy">Safety &amp; Privacy</a><a href="/technology">Technology</a><a href="/login?role=patient">Begin intake</a><a href="/login?role=doctor">Institute desk</a></div>
+      <div class="foot-col foot-tech"><h5>Technology &amp; readiness</h5><p class="small muted">Modern web frontend, API service and structured database — designed for FHIR/ABDM interconnection, deterministic safety rules and full audit.</p></div>
+    </div>
+    <p class="foot-note">AI prepares structured context. It does not diagnose or prescribe. A registered practitioner must verify.</p>
+  </footer>
+  <script src="/js/i18n.js?v=13"></script>
+  <script>PreclinicI18n.bindSwitch(); PreclinicI18n.apply();</script>
+</body>
+</html>

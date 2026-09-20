@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clinical Workflow · Preclinic IQ AI</title>
+  <link rel="stylesheet" href="/css/base.css?v=12" />
+  <link rel="stylesheet" href="/css/layout.css?v=12" />
+  <link rel="stylesheet" href="/css/components.css?v=6" />
+  <link rel="stylesheet" href="/css/site.css?v=6" />
+</head>
+<body class="landing">
+  <nav class="pub-nav">
+    <div class="brand">
+      <img src="/assets/emblem.png" alt="" />
+      <div><h1>Preclinic IQ AI</h1><small>Clinical Workflow</small></div>
+    </div>
+        <div class="pub-links">
+      <a href="/" >Home</a>
+      <a href="/how-it-works" >Patient Journey</a>
+      <a href="/clinical-workflow" class="on">Clinical Workflow</a>
+      <a href="/capabilities" >Capabilities</a>
+      <a href="/privacy" >Safety &amp; Privacy</a>
+      <a href="/technology" >Technology</a>
+      <a href="/roadmap" >Roadmap</a><div class="lang-switch dark">
+        <button type="button" data-lang="en">EN</button>
+        <button type="button" data-lang="hi">हिं</button>
+        <button type="button" data-lang="ta">த</button>
+        <button type="button" data-lang="bn">বাং</button>
+      </div>
+      <a class="btn nav-signin" href="/login">Sign in</a>
+    </div>
+  </nav>
+  <section class="story">
+    <div class="eyebrow">From patient words to verified chart</div>
+    <h1>The clinical desk is where preparation becomes verification.</h1>
+    <p class="muted" style="max-width:64ch">Every visit moves through real, persisted states. No step is a screen animation — each transition writes to the database, creates an audit entry, and updates the patient’s dashboard only when the backend confirms it.</p>
+    <div class="manuscript" style="margin-top:18px">
+      <div class="steps">
+        <div><span class="num">1</span><div><strong>Queue with real metrics</strong><div class="small muted">Pending Reviews, In Intake, Active Emergencies, Verified Today — all counted from live backend queries, never hardcoded.</div></div></div>
+        <div><span class="num">2</span><div><strong>Search &amp; filter</strong><div class="small muted">Find by patient name, ID, visit ID, status. Filters for Awaiting Doctor, In Intake, Emergency, Verified.</div></div></div>
+        <div><span class="num">3</span><div><strong>Open Case → Workspace</strong><div class="small muted">Tabs: Overview (status, docs, conflicts), AI Summary (source-labelled), History (structured comparison), Documents (real viewer), Intake (raw Q&A), Timeline (audit-backed events).</div></div></div>
+        <div><span class="num">4</span><div><strong>Document viewer — real files</strong><div class="small muted">PDF rendered inline via authenticated /view, images with zoom, fullscreen, close, download. 403 if not authorized. No filename-only modal.</div></div></div>
+        <div><span class="num">5</span><div><strong>Review &amp; correct</strong><div class="small muted">Edit narrative or structured history — saving creates a new version, not an overwrite. Every version is kept.</div></div></div>
+        <div><span class="num">6</span><div><strong>Verify or reject</strong><div class="small muted">Doctor identity, visit, timestamp and status are persisted. Patient dashboard moves only after backend confirmation. Emergency desk: Open → Acknowledge → Resolve, all persisted.</div></div></div>
+      </div>
+      <hr class="rule" />
+      <p class="disclaimer">AI prepares structured context. It does not diagnose or prescribe. A registered practitioner must verify.</p>
+    </div>
+    <div class="story-grid" style="margin-top:22px">
+      <article class="story-card">
+        <h3>Doctor Profile — persists</h3>
+        <p>Edit name, department, qualification, email, phone. Save writes to backend; refresh keeps it. Cancel discards. Doctor ID is protected.</p>
+        <a class="btn ghost tiny" href="/login?role=doctor">Open doctor desk</a>
+      </article>
+      <article class="story-card">
+        <h3>Emergency — deterministic</h3>
+        <p>Patient reason + confirmation → request created. Doctor sees active → acknowledge → resolve → patient sees updated status. No duplicate active requests. No auto-ambulance.</p>
+        <a class="btn ghost tiny" href="/privacy">Safety model</a>
+      </article>
+      <article class="story-card">
+        <h3>Admin — 5 real sections</h3>
+        <p>Dashboard, Patient Management, Doctor Management, Visits &amp; Documents, Emergency &amp; Audit — all from real data, no fake charts.</p>
+        <a class="btn ghost tiny" href="/login?role=admin">Admin desk</a>
+      </article>
+    </div>
+  </section>
+  <footer class="pub-foot2">
+    <div class="foot-grid">
+      <div class="foot-brand"><img src="/assets/emblem.png" alt="" width="40" height="40" /><div><strong>Preclinic IQ AI</strong><span class="small muted">Ministry of Ayush · AIIA</span></div></div>
+      <div class="foot-col"><h5>Product</h5><a href="/how-it-works">Patient Journey</a><a href="/clinical-workflow">Clinical Workflow</a><a href="/capabilities">Capabilities</a><a href="/roadmap">Roadmap</a></div>
+      <div class="foot-col"><h5>Trust</h5><a href="/privacy">Safety &amp; Privacy</a><a href="/technology">Technology</a><a href="/login?role=patient">Begin intake</a><a href="/login?role=doctor">Institute desk</a></div>
+      <div class="foot-col foot-tech"><h5>Technology &amp; readiness</h5><p class="small muted">Structured intake, deterministic safety rules, versioned summaries and full audit — designed for FHIR/ABDM interconnection.</p></div>
+    </div>
+    <p class="foot-note">AI prepares structured context. It does not diagnose or prescribe. A registered practitioner must verify.</p>
+  </footer>
+  <script src="/js/i18n.js?v=13"></script>
+  <script>PreclinicI18n.bindSwitch(); PreclinicI18n.apply();</script>
+</body>
+</html>

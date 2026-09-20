@@ -15,19 +15,20 @@
       <img src="/assets/emblem.png" alt="" />
       <div><h1>Preclinic IQ AI</h1><small>Privacy &amp; Safety</small></div>
     </div>
-    <div class="pub-links">
-      <a href="/">Home</a>
-      <a href="/why">How it helps</a>
-      <a href="/how-it-works">Patient Journey</a>
-      <a href="/capabilities">Capabilities</a>
+        <div class="pub-links">
+      <a href="/" >Home</a>
+      <a href="/how-it-works" >Patient Journey</a>
+      <a href="/clinical-workflow" >Clinical Workflow</a>
+      <a href="/capabilities" >Capabilities</a>
       <a href="/privacy" class="on">Safety &amp; Privacy</a>
-      <a href="/roadmap">Roadmap</a><div class="lang-switch dark">
+      <a href="/technology" >Technology</a>
+      <a href="/roadmap" >Roadmap</a><div class="lang-switch dark">
         <button type="button" data-lang="en">EN</button>
         <button type="button" data-lang="hi">हिं</button>
         <button type="button" data-lang="ta">த</button>
         <button type="button" data-lang="bn">বাং</button>
       </div>
-      <a class="btn nav-signin" href="/login" style="background:#f4efe4;color:#12211c;border:1px solid #c4a35a;font-weight:700">Sign in</a>
+      <a class="btn nav-signin" href="/login">Sign in</a>
     </div>
   </nav>
   <section class="story">
@@ -64,7 +65,15 @@
       <p style="max-width:70ch">These controls are testable in the running build: sign in as two different patients and try to reach the other’s documents (the backend refuses), open a doctor-only route as a patient (403), or watch the audit trail fill as a visit moves from intake to verification.</p>
     </div>
   </section>
-  <footer class="pub-foot">Preclinic IQ AI · Ministry of Ayush · All India Institute of Ayurveda</footer>
+    <footer class="pub-foot2">
+    <div class="foot-grid">
+      <div class="foot-brand"><img src="/assets/emblem.png" alt="" width="40" height="40" /><div><strong>Preclinic IQ AI</strong><span class="small muted">Ministry of Ayush · AIIA</span></div></div>
+      <div class="foot-col"><h5>Product</h5><a href="/how-it-works">Patient Journey</a><a href="/clinical-workflow">Clinical Workflow</a><a href="/capabilities">Capabilities</a><a href="/roadmap">Roadmap</a></div>
+      <div class="foot-col"><h5>Trust</h5><a href="/privacy">Safety &amp; Privacy</a><a href="/technology">Technology</a><a href="/login?role=patient">Begin intake</a><a href="/login?role=doctor">Institute desk</a></div>
+      <div class="foot-col foot-tech"><h5>Technology &amp; readiness</h5><p class="small muted">Structured intake, deterministic safety rules, versioned summaries and full audit — designed for FHIR/ABDM interconnection.</p></div>
+    </div>
+    <p class="foot-note">AI prepares structured context. It does not diagnose or prescribe. A registered practitioner must verify.</p>
+  </footer>
   <script src="/js/i18n.js?v=133"></script>
   <script>PreclinicI18n.bindSwitch(); PreclinicI18n.apply();</script>
 </body>

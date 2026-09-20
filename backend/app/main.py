@@ -87,12 +87,14 @@ def create_app() -> FastAPI:
         "/admin": FRONTEND / "admin.html",
         "/doctor": FRONTEND / "doctor.html",
         "/patient": FRONTEND / "patient.html",
-        "/about": FRONTEND / "about.html",
+        "/about": FRONTEND / "technology.html",
         "/how-it-works": FRONTEND / "how-it-works.html",
-        "/why": FRONTEND / "why.html",
+        "/why": FRONTEND / "how-it-works.html",
         "/capabilities": FRONTEND / "capabilities.html",
         "/privacy": FRONTEND / "privacy.html",
         "/roadmap": FRONTEND / "roadmap.html",
+        "/clinical-workflow": FRONTEND / "clinical-workflow.html",
+        "/technology": FRONTEND / "technology.html",
     }
 
     def _page(path: Path):
@@ -143,6 +145,14 @@ def create_app() -> FastAPI:
     @app.get("/roadmap")
     def roadmap_page():
         return _page(pages["/roadmap"])
+
+    @app.get("/clinical-workflow")
+    def clinical_workflow_page():
+        return _page(pages["/clinical-workflow"])
+
+    @app.get("/technology")
+    def technology_page():
+        return _page(pages["/technology"])
 
     @app.get("/login.html")
     def login_html():

@@ -15,19 +15,20 @@
       <img src="/assets/emblem.png" alt="" />
       <div><h1>Preclinic IQ AI</h1><small>Capabilities</small></div>
     </div>
-    <div class="pub-links">
-      <a href="/">Home</a>
-      <a href="/why">How it helps</a>
-      <a href="/how-it-works">Patient Journey</a>
+        <div class="pub-links">
+      <a href="/" >Home</a>
+      <a href="/how-it-works" >Patient Journey</a>
+      <a href="/clinical-workflow" >Clinical Workflow</a>
       <a href="/capabilities" class="on">Capabilities</a>
-      <a href="/privacy">Safety &amp; Privacy</a>
-      <a href="/roadmap">Roadmap</a><div class="lang-switch dark">
+      <a href="/privacy" >Safety &amp; Privacy</a>
+      <a href="/technology" >Technology</a>
+      <a href="/roadmap" >Roadmap</a><div class="lang-switch dark">
         <button type="button" data-lang="en">EN</button>
         <button type="button" data-lang="hi">हिं</button>
         <button type="button" data-lang="ta">த</button>
         <button type="button" data-lang="bn">বাং</button>
       </div>
-      <a class="btn nav-signin" href="/login" style="background:#f4efe4;color:#12211c;border:1px solid #c4a35a;font-weight:700">Sign in</a>
+      <a class="btn nav-signin" href="/login">Sign in</a>
     </div>
   </nav>
   <section class="story">
@@ -47,7 +48,15 @@
       <article class="story-card"><span class="chip gold">Mock readiness</span><h3>FHIR / ABDM adapters</h3><p>Resource-shaped output and a clean adapter boundary so a FHIR server or ABHA linkage can be connected without touching the clinical workflow.</p></article>
     </div>
   </section>
-  <footer class="pub-foot">If it isn’t listed here, it isn’t in this build. See the <a href="/roadmap" style="color:#e6d7ad">Roadmap</a> for what is planned.</footer>
+    <footer class="pub-foot2">
+    <div class="foot-grid">
+      <div class="foot-brand"><img src="/assets/emblem.png" alt="" width="40" height="40" /><div><strong>Preclinic IQ AI</strong><span class="small muted">Ministry of Ayush · AIIA</span></div></div>
+      <div class="foot-col"><h5>Product</h5><a href="/how-it-works">Patient Journey</a><a href="/clinical-workflow">Clinical Workflow</a><a href="/capabilities">Capabilities</a><a href="/roadmap">Roadmap</a></div>
+      <div class="foot-col"><h5>Trust</h5><a href="/privacy">Safety &amp; Privacy</a><a href="/technology">Technology</a><a href="/login?role=patient">Begin intake</a><a href="/login?role=doctor">Institute desk</a></div>
+      <div class="foot-col foot-tech"><h5>Technology &amp; readiness</h5><p class="small muted">Structured intake, deterministic safety rules, versioned summaries and full audit — designed for FHIR/ABDM interconnection.</p></div>
+    </div>
+    <p class="foot-note">AI prepares structured context. It does not diagnose or prescribe. A registered practitioner must verify.</p>
+  </footer>
   <script src="/js/i18n.js?v=133"></script>
   <script>PreclinicI18n.bindSwitch(); PreclinicI18n.apply();</script>
 </body>
